@@ -28,10 +28,10 @@ const App = () => {
         const scene = new THREE.Scene()
         const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000)
         camera.position.set( 0, 20, 20 )
-
         const light = new THREE.AmbientLight( 0x404040 )
         scene.add( light )
-        const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 )
+        const directionalLight = new THREE.DirectionalLight( 0xffffff, 1 )
+        directionalLight.position.set(5, 20, 2)
         scene.add( directionalLight )
 
         const renderer = new THREE.WebGLRenderer()
@@ -84,7 +84,8 @@ const App = () => {
             RIGHT: THREE.MOUSE.PAN
         }
         controls.update()
-        controls.addEventListener( 'change', ()=>{renderer.render(scene, camera)} );
+        controls.addEventListener( 'change', ()=>{renderer.render(scene, camera)} )
+        renderer.setClearColor("#3c3f41")
         renderer.render( scene, camera )
     }, [])
     return (
