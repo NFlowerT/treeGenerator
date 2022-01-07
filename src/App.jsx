@@ -11,11 +11,17 @@ import {
     CylinderGeometry,
     Object3D,
     Matrix4,
-    TetrahedronGeometry
+    TetrahedronGeometry,
+    SphereGeometry,
+    MeshBasicMaterial,
+    MeshNormalMaterial,
 } from 'three'
+import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
 import {useEffect} from "react"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import {Mesh} from "three"
+var Simplex = require('perlin-simplex')
+var simplex = new Simplex()
 
 const App = () => {
     const cylinderMesh = (pointX, pointY, material, shrink, coreWidth) => {
@@ -26,33 +32,86 @@ const App = () => {
             0, 0, 1, 0,
             0, -1, 0, 0,
             0, 0, 0, 1))
-        const edgeGeometry = new CylinderGeometry(coreWidth - shrink, coreWidth, direction.length(), 8, 1)
+        const edgeGeometry = new CylinderGeometry(coreWidth - shrink, coreWidth, direction.length(), 8, 1, false)
         const edge = new THREE.Mesh(edgeGeometry, material)
-        edge.applyMatrix(orientation)
+        edge.applyMatrix4(orientation)
         edge.position.x = (pointY.x + pointX.x) / 2
         edge.position.y = (pointY.y + pointX.y) / 2
         edge.position.z = (pointY.z + pointX.z) / 2
+        edge.updateMatrixWorld();
+        edge.updateMatrix();
+        edge.geometry.applyMatrix( edge.matrix );
+        edge.position.set( 0, 0, 0 );
+        edge.rotation.set( 0, 0, 0 );
+        edge.scale.set( 1, 1, 1 );
         return edge
     }
 
     const generateBranch = (vectors, coreWidth, shrink, scene, material) => {
+        let previousCylinder = null
         for (let i = 0; i < vectors.length - 1; i++){
-            const connectorGeometry = new OctahedronGeometry(coreWidth,1)
-            const connectorMesh = new Mesh(connectorGeometry, material)
-            connectorMesh.position.set(vectors[i].x, vectors[i].y, vectors[i].z)
             const cylinder = cylinderMesh(vectors[i], vectors[i + 1], material, shrink, coreWidth)
-            scene.add(connectorMesh)
             scene.add(cylinder)
             coreWidth -= shrink
+            if (previousCylinder !== null) {
+                console.log(previousCylinder)
+                let currentVertices = getBottomVertices(cylinder)
+                let previousVertices = getTopVertices(previousCylinder)
+                let allVertices = [...currentVertices, ...previousVertices]
+                console.log("All vertices",allVertices)
+                // currentVertices.forEach(verticle => {
+                //     let sphere = new Mesh(new SphereGeometry(1), new MeshNormalMaterial())
+                //     sphere.position.set(verticle.x, verticle.y, verticle.z)
+                //     scene.add(sphere)
+                // })
+                const geometry = new ConvexGeometry( allVertices )
+                const mesh = new THREE.Mesh( geometry, material )
+                scene.add( mesh )
+            }
+            previousCylinder = cylinder
         }
     }
 
     const generateTop = (posVector, material, scene, yScale, radius) => {
-        const topGeometry1 = new TetrahedronGeometry(radius, 3)
-        const topMesh1 = new Mesh(topGeometry1, material)
-        topMesh1.position.set(posVector.x, posVector.y, posVector.z)
-        topMesh1.scale.y = yScale
-        scene.add(topMesh1)
+        const topGeometry = new TetrahedronGeometry(radius, 5)
+        const topMesh = new Mesh(topGeometry, material)
+        topMesh.position.set(posVector.x, posVector.y, posVector.z)
+        const k = 2
+        const vertices = topMesh.geometry.attributes.position.array;
+        for (let i = 0; i <= vertices.length; i += 3) {
+            let p = new Vector3(vertices[i],vertices[i + 1],vertices[i + 2])
+            p.normalize().multiplyScalar(1 + 0.2 * simplex.noise3d(p.x * k, p.y * k, p.z * k))
+            topMesh.geometry.attributes.position.array[i] = p.x
+            topMesh.geometry.attributes.position.array[i + 1] = p.y
+            topMesh.geometry.attributes.position.array[i + 2] = p.z
+        }
+        topMesh.geometry.attributes.position.needsUpdate = true
+        topMesh.geometry.computeVertexNormals()
+        let xz = Math.floor(Math.random() * (6 - 4)) + 4
+        topMesh.scale.set(
+            xz,
+            Math.floor(Math.random() * (4 - 3)) + 3,
+            xz
+        )
+        scene.add(topMesh)
+    }
+
+    const getTopVertices = (cylinder) => {
+        let bottomVertices = []
+        let vertices = cylinder.geometry.attributes.position.array
+        for (let i = 3; i < 24; i += 3){
+            bottomVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
+        }
+        return bottomVertices
+    }
+
+    const getBottomVertices = (cylinder) => {
+        let topVertices = []
+        let vertices = cylinder.geometry.attributes.position.array
+        for (let i = vertices.length - 3; i >= vertices.length - 24; i -= 3){
+            topVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
+        }
+        return topVertices
     }
 
     useEffect(() => {
@@ -60,7 +119,7 @@ const App = () => {
 
         //camera
         const camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000)
-        camera.position.set( 0, 20, 20 )
+        camera.position.set( 0, 40, 40 )
 
         //light
         const light = new AmbientLight( 0x404040 )
@@ -117,10 +176,13 @@ const App = () => {
             generateBranch(branch4Points, 0.8, 0.2, scene, woodMaterial)
 
             //tree tops
-            generateTop(corePoints[corePoints.length - 1], topMaterial, scene, 0.65, 6)
+            let top1 = generateTop(corePoints[corePoints.length - 1], topMaterial, scene, 0.65, 6)
             generateTop(branch2Points[branch2Points.length - 1], topMaterial, scene, 0.7, 4)
             generateTop(branch3Points[branch3Points.length - 1], topMaterial, scene, 0.65, 4)
             generateTop(branch4Points[branch4Points.length - 1], topMaterial, scene, 0.8, 3)
+
+
+
 
         //controls
         const controls = new OrbitControls( camera, renderer.domElement )
