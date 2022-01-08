@@ -1,3 +1,4 @@
+import './App.css'
 import * as React from 'react'
 import * as THREE from 'three'
 import {
@@ -14,17 +15,23 @@ import {
     TetrahedronGeometry,
     SphereGeometry,
     MeshBasicMaterial,
-    MeshNormalMaterial,
+    MeshNormalMaterial, WebGL1Renderer,
 } from 'three'
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
-import {useEffect} from "react"
+import {useEffect, useRef, useState} from "react"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls"
 import {Mesh} from "three"
 var Simplex = require('perlin-simplex')
 var simplex = new Simplex()
 
 const App = () => {
-    const cylinderMesh = (pointX, pointY, material, shrink, coreWidth) => {
+
+    const [s, setS] = useState(0.2) // scale
+    const [generation, setGeneration] = useState(1)
+
+    const container = useRef(null);
+
+    const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth) => {
         const direction = new Vector3().subVectors(pointY, pointX)
         const orientation = new Matrix4()
         orientation.lookAt(pointX, pointY, new Object3D().up)
@@ -32,38 +39,30 @@ const App = () => {
             0, 0, 1, 0,
             0, -1, 0, 0,
             0, 0, 0, 1))
-        const edgeGeometry = new CylinderGeometry(coreWidth - shrink, coreWidth, direction.length(), 8, 1, false)
+        const edgeGeometry = new CylinderGeometry(topWidth, bottomWidth, direction.length(), 8, 1, false)
         const edge = new THREE.Mesh(edgeGeometry, material)
         edge.applyMatrix4(orientation)
         edge.position.x = (pointY.x + pointX.x) / 2
         edge.position.y = (pointY.y + pointX.y) / 2
         edge.position.z = (pointY.z + pointX.z) / 2
-        edge.updateMatrixWorld();
-        edge.updateMatrix();
-        edge.geometry.applyMatrix( edge.matrix );
-        edge.position.set( 0, 0, 0 );
-        edge.rotation.set( 0, 0, 0 );
-        edge.scale.set( 1, 1, 1 );
+        edge.updateMatrixWorld()
+        edge.updateMatrix()
+        edge.geometry.applyMatrix( edge.matrix )
+        edge.position.set( 0, 0, 0 )
+        edge.rotation.set( 0, 0, 0 )
+        edge.scale.set( 1, 1, 1 )
         return edge
     }
 
-    const generateBranch = (vectors, coreWidth, shrink, scene, material) => {
+    const generateBranch = (coreData, scene, material) => {
         let previousCylinder = null
-        for (let i = 0; i < vectors.length - 1; i++){
-            const cylinder = cylinderMesh(vectors[i], vectors[i + 1], material, shrink, coreWidth)
+        for (let i = 0; i < coreData.length - 1; i++){
+            const cylinder = cylinderMesh(coreData[i].vector, coreData[i + 1].vector, material, coreData[i].width, coreData[i + 1].width)
             scene.add(cylinder)
-            coreWidth -= shrink
             if (previousCylinder !== null) {
-                console.log(previousCylinder)
                 let currentVertices = getBottomVertices(cylinder)
                 let previousVertices = getTopVertices(previousCylinder)
                 let allVertices = [...currentVertices, ...previousVertices]
-                console.log("All vertices",allVertices)
-                // currentVertices.forEach(verticle => {
-                //     let sphere = new Mesh(new SphereGeometry(1), new MeshNormalMaterial())
-                //     sphere.position.set(verticle.x, verticle.y, verticle.z)
-                //     scene.add(sphere)
-                // })
                 const geometry = new ConvexGeometry( allVertices )
                 const mesh = new THREE.Mesh( geometry, material )
                 scene.add( mesh )
@@ -72,8 +71,8 @@ const App = () => {
         }
     }
 
-    const generateTop = (posVector, material, scene, yScale, radius) => {
-        const topGeometry = new TetrahedronGeometry(radius, 5)
+    const generateTop = (posVector, material, scene) => {
+        const topGeometry = new TetrahedronGeometry(s, 5)
         const topMesh = new Mesh(topGeometry, material)
         topMesh.position.set(posVector.x, posVector.y, posVector.z)
         const k = 2
@@ -89,9 +88,9 @@ const App = () => {
         topMesh.geometry.computeVertexNormals()
         let xz = Math.floor(Math.random() * (6 - 4)) + 4
         topMesh.scale.set(
-            xz,
-            Math.floor(Math.random() * (4 - 3)) + 3,
-            xz
+            s * xz,
+            s * (Math.floor(Math.random() * (4 - 3)) + 3),
+            s * xz
         )
         scene.add(topMesh)
     }
@@ -99,7 +98,7 @@ const App = () => {
     const getTopVertices = (cylinder) => {
         let bottomVertices = []
         let vertices = cylinder.geometry.attributes.position.array
-        for (let i = 3; i < 24; i += 3){
+        for (let i = 0; i < 24; i += 3){
             bottomVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
         }
         return bottomVertices
@@ -112,6 +111,33 @@ const App = () => {
             topVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
         }
         return topVertices
+    }
+
+    const generateBranchData = (startingVector, startingWidth, steps) => {
+        let data = [{vector: startingVector, width: startingWidth}]
+        steps.forEach(step => {
+            data.push({
+                vector: new Vector3(
+                    data[data.length - 1].vector.x + step.x,
+                    data[data.length - 1].vector.y + step.y,
+                    data[data.length - 1].vector.z + step.z,
+                ),
+                width: data[data.length - 1].width + (data[data.length - 1].width * (step.width / 100))
+            })
+        })
+        return data
+    }
+
+    const calculateTopPosition = (topCorePoint, topBranchPoint) => {
+        return new Vector3(
+            topBranchPoint.x,
+            topBranchPoint.y + ((topBranchPoint.y / 100) * 15),
+            topCorePoint.z
+        )
+    }
+
+    const treeGrower = () => {
+
     }
 
     useEffect(() => {
@@ -132,57 +158,50 @@ const App = () => {
         scene.add( directionalLight2 )
 
         //renderer
-        const renderer = new WebGLRenderer()
+        const renderer = new WebGL1Renderer()
         renderer.setSize( window.innerWidth, window.innerHeight )
-        document.body.innerHTML = ""
-        document.body.appendChild( renderer.domElement )
+        container.current.innerHTML = ""
+        container.current.appendChild( renderer.domElement )
 
         //materials
         const woodMaterial = new MeshPhysicalMaterial({color: "#8f6246", flatShading: true})
         const topMaterial = new MeshPhysicalMaterial({color: "#91b341", flatShading: true})
 
-        //generating shapes
-        const corePoints = [
-            new Vector3( 0, 0, 0 ),
-            new Vector3( 0, 6, 0 ),
-            new Vector3( 1, 15, 0 ),
-            new Vector3( -0.5, 20, 0 ),
-            new Vector3( -0.5, 27, 0 )
+        let coreSteps = [
+            {x: s * 0.1, y: s * 1.8, z: s * 0, width: -25},
+            {x: s * 0.3, y: s * 2.8, z: s * 0, width: -15},
+            {x: s * 0.4, y: s * 2, z: s * 0, width: -10},
+            {x: s * 0.2, y: s * 1, z: s * 0, width: -5},
+            {x: s * -0.1, y: s * 1, z: s * 0, width: 0},
+            {x: s * -0.6, y: s * 2, z: s * 0, width: -5},
+            {x: s * -0.2, y: s * 2, z: s * 0, width: 0},
         ]
 
-            //core
-            generateBranch(corePoints, 2, 0.4, scene, woodMaterial)
+        let coreData = generateBranchData(new Vector3(0,0,0), s, coreSteps)
+        generateBranch(coreData, scene, woodMaterial)
 
-            //branches
-            const branch1Points = [corePoints[1], new Vector3( corePoints[1].x - 3, corePoints[1].y + 1, corePoints[1].z + 2 )]
-            generateBranch(branch1Points, 1, 0, scene, woodMaterial)
-
-            const branch2Points = [corePoints[2], new Vector3( corePoints[2].x + 4, corePoints[2].y + 1, corePoints[2].z - 1 ) , new Vector3( corePoints[2].x + 8, corePoints[2].y + 5, corePoints[2].z )]
-            generateBranch(branch2Points, 1, 0.5, scene, woodMaterial)
-
-            const branch3Points = [corePoints[3], new Vector3( corePoints[3].x - 8, corePoints[3].y + 2, corePoints[3].z )]
-            generateBranch(branch3Points, 0.8, 0.5, scene, woodMaterial)
-
-            const branch4Start = new Vector3(
-                corePoints[2].x + (corePoints[3].x - corePoints[2].x) / 2,
-                corePoints[2].y +(corePoints[3].y - corePoints[2].y) / 2,
-                corePoints[2].z +(corePoints[3].z - corePoints[2].z) / 2
-            )
-            const branch4Points = [
-                branch4Start,
-                new Vector3(branch4Start.x, branch4Start.y + 2, branch4Start.z - 4),
-                new Vector3(branch4Start.x + 2, branch4Start.y + 5, branch4Start.z - 5.5)
-            ]
-            generateBranch(branch4Points, 0.8, 0.2, scene, woodMaterial)
-
-            //tree tops
-            let top1 = generateTop(corePoints[corePoints.length - 1], topMaterial, scene, 0.65, 6)
-            generateTop(branch2Points[branch2Points.length - 1], topMaterial, scene, 0.7, 4)
-            generateTop(branch3Points[branch3Points.length - 1], topMaterial, scene, 0.65, 4)
-            generateTop(branch4Points[branch4Points.length - 1], topMaterial, scene, 0.8, 3)
+        let branch1Steps = [
+            {x: s * -0.5, y: s * 0.35, z: s * -0.3, width: -40},
+            {x: s * -0.3, y: s * 0.8, z: s * -0.2, width: -10},
+            {x: s * 0.1, y: s * 1.1, z: s * -0.2, width: -20},
+        ]
+        let branch1Data = generateBranchData(coreData[coreData.length - 1].vector, coreData[coreData.length - 1].width, branch1Steps)
+        generateBranch(branch1Data, scene, woodMaterial)
 
 
+        let branch2Steps = [
+            {x: s * 0.3, y: s * 0.2, z: s * 0.2, width: -40},
+            {x: s * 0.5, y: s * 1.1, z: s * 0.3, width: -20},
+            {x: s * 0.1, y: s * 1.3, z: s * -0.2, width: -20},
+        ]
+        let branch2Data = generateBranchData(coreData[coreData.length - 1].vector, coreData[coreData.length - 1].width, branch2Steps)
+        generateBranch(branch2Data, scene, woodMaterial)
 
+        generateTop(
+            calculateTopPosition(
+                coreData[coreData.length - 1].vector, branch1Data[branch1Data.length - 1].vector),
+                topMaterial, scene
+        )
 
         //controls
         const controls = new OrbitControls( camera, renderer.domElement )
@@ -197,9 +216,14 @@ const App = () => {
         //render
         renderer.setClearColor("#3c3f41")
         renderer.render( scene, camera )
-    }, [])
+    }, [s])
+
     return (
-        <div/>
+        <React.Fragment>
+            <button onClick={() => setS(s + 0.1)}> Progress </button>
+            <div ref={container}/>
+        </React.Fragment>
+
     )
 }
 

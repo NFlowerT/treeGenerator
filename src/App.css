@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+button{
+  width: 8rem;
+  height: 3rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #191a1c9e;
+  border-radius: 13px;
+  background: #4c4f52;
+  margin: 0 auto;
+  position: absolute;
+  bottom: 12px;
+  font-weight: bold;
+  font-family: -webkit-pictograph;
+  color: #7e9646;
+}
+
+body {
+  overflow: hidden;
+}
+
+#root{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
