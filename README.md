@@ -11,3 +11,4 @@
 ## TODO
  - changing colors of the trunk from green to brown
  - random appearing trunk branches
+ - fix connection between tree tops and trunk
