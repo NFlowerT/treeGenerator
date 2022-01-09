@@ -25,11 +25,200 @@ var Simplex = require('perlin-simplex')
 var simplex = new Simplex()
 
 const App = () => {
+    const getRandomNumber = (min, max) => {
+        return Math.random() * (max - min) + min
+    }
 
-    const [s, setS] = useState(0.2) // scale
-    const [generation, setGeneration] = useState(1)
-
+    const [hS, setHS] = useState(1) // scale
+    const [vS, setVS] = useState(1) // scale
+    const [generation, setGeneration] = useState(0)
     const container = useRef(null);
+    const [coreData, setCoreData] = useState([])
+    const [coreSteps, setCoreSteps] = useState([])
+    const [trunkSegmentAmount, setTrunkSegmentAmount] = useState(Math.floor(getRandomNumber(6, 8)))
+    const [trunkStartWidth, setTrunkStartWidth] = useState(0.4)
+
+    const trunkTop = {
+        x: getRandomNumber(-0.2, 0.2),
+        z: getRandomNumber(-0.2, 0.2)
+    }
+
+    const growTrunk = () => {
+        if (coreSteps.length === 0) {
+            setCoreSteps(coreSteps.concat({
+                x: 0,
+                y: getRandomNumber(0.3, 0.6),
+                z: 0,
+                width: -20
+            }))
+        } else if (coreSteps.length < trunkSegmentAmount) {
+            if (generation % 4 === 0) {
+                if (coreSteps.length < Math.floor(trunkSegmentAmount / 2)) {
+                    setCoreSteps(coreSteps.concat({
+                        x: getRandomNumber(-0.1, 0.1),
+                        y: getRandomNumber(0.4, 1),
+                        z: getRandomNumber(-0.1, 0.1),
+                        width: getRandomNumber(-15, 1)
+                    }))
+                } else {
+                    setCoreSteps(coreSteps.concat({
+                        x: ((trunkTop.x - coreData[Math.floor(trunkSegmentAmount / 2)].vector.x / Math.floor(trunkSegmentAmount / 2))),
+                        y: getRandomNumber(0.5, 1),
+                        z: ((trunkTop.z - coreData[Math.floor(trunkSegmentAmount / 2)].vector.z / Math.floor(trunkSegmentAmount / 2))),
+                        width: getRandomNumber(-15, 5)
+                    }))
+                }
+            }
+        } else {
+            incrementCoreSteps(0.01)
+            setTrunkStartWidth(trunkStartWidth + 0.02)
+        }
+    }
+
+    const incrementCoreSteps = (height) => {
+        let newCoreSteps = []
+        coreSteps.forEach(step => {
+            console.log("step", step)
+            newCoreSteps.push({
+                x: step.x,
+                y: step.y + height,
+                z: step.z,
+                width: step.width
+            })
+        })
+        setCoreSteps(newCoreSteps)
+    }
+
+    const [topBranchesRadii, setTopBranchesRadii] = useState([])
+    const [topBranchesHeights, setTopBranchesHeights] = useState([])
+
+    const growTopBranches = () => {
+        if (generation === 7){
+            generateTopBranchesRadii()
+            generateTopBranchesHeights()
+        }
+        if (generation === 8) {
+            generateTopBranchesTops()
+        }
+        if (generation === 9) {
+            generateTopBranchesSteps()
+        }
+        if (generation > 9){
+            incrementTopBranchesRadii(0.1)
+            incrementTopBranchesHeights(0.1)
+            generateTopBranchesTops()
+            generateTopBranchesSteps()
+            setTop({x: top.x + 0.08, y: top.y + 0.05, z: top.z + 0.08})
+        }
+    }
+
+    const growTree = () => {
+        growTrunk()
+        growTopBranches()
+        generateModel()
+        setGeneration(generation + 1)
+    }
+
+    const incrementTopBranchesRadii = (i) => {
+        let newTopBranchesRadii = []
+        topBranchesRadii.forEach(radius => {
+            newTopBranchesRadii.push(radius + i)
+        })
+        setTopBranchesRadii(newTopBranchesRadii)
+    }
+
+    const generateTopBranchesRadii = () => {
+        let newTopBranchesRadii = []
+        for (let i = 0; i < topBranchesAmount; i++){
+            newTopBranchesRadii.push(getRandomNumber(0.9, 1.2))
+        }
+        setTopBranchesRadii(newTopBranchesRadii)
+    }
+
+    const generateTopBranchesHeights = () => {
+        let newTopBranchesHeights = []
+        for (let i = 0; i < topBranchesAmount; i++) {
+            newTopBranchesHeights.push(getRandomNumber(0.8, 1.2))
+        }
+        setTopBranchesHeights(newTopBranchesHeights)
+    }
+
+    const incrementTopBranchesHeights = (i) => {
+        let newTopBranchesHeights = []
+        topBranchesRadii.forEach(radius => {
+            newTopBranchesHeights.push(radius + i)
+        })
+        setTopBranchesHeights(newTopBranchesHeights)
+    }
+
+    const [topBranchesTops, setTopBranchesTops] = useState([])
+    const [topBranchesAmount] = useState(Math.floor(getRandomNumber(2, 5)))
+    const [topBranchesSteps, setTopBranchesSteps] = useState([])
+    const [topBranchesData, setTopBranchData] = useState([])
+    const [top, setTop] = useState({x: getRandomNumber(1.2, 1.4), y: 1, z: getRandomNumber(1.2, 1.4)})
+
+    const evenRanges = {
+        0: 0,
+        1: 1,
+        2: 0.5,
+        3: 0.25
+    }
+
+    const unevenRanges = {
+        0: 0.33,
+        1: 0.66,
+        2: 1
+    }
+
+    const generateTopBranchesTops = (radius, height) => {
+        let newTopBranchesTops = []
+        for (let i = 0; i < topBranchesAmount; i++){
+            let r = topBranchesRadii[i] * Math.sqrt(0.5)
+            let theta = i % 2 ? evenRanges[i] * 2 * Math.PI : unevenRanges[i] * 2 * Math.PI
+            const x = coreData[coreData.length - 1].vector.x + r * Math.cos(theta)
+            const z = coreData[coreData.length - 1].vector.z + r * Math.sin(theta)
+            const y = coreData[coreData.length - 1].vector.y + topBranchesHeights[i]
+            newTopBranchesTops.push(new Vector3(x, y, z))
+        }
+        setTopBranchesTops(newTopBranchesTops)
+    }
+
+    const generateTopBranchesSteps = () => {
+        let newTopBranchesSteps = []
+        for (let i = 0; i < topBranchesAmount; i++){
+            let topBranchesStepsAmount = Math.floor(getRandomNumber(2,4))
+            let newTopBranches = []
+            for (let j = 0; j < topBranchesStepsAmount; j++){
+                if (j < topBranchesStepsAmount - 1){
+                    newTopBranches.push({
+                        x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount) * getRandomNumber(1.1, 1.3),
+                        y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
+                        z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount) * getRandomNumber(1.1, 1.3),
+                        width: j === 0 ? -60 : getRandomNumber(-5,5)
+                    })
+                } else {
+                    newTopBranches.push({
+                        x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount) * getRandomNumber(0.7, 1),
+                        y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
+                        z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount) * getRandomNumber(0.7, 1),
+                        width: j === 0 ? -60 : getRandomNumber(-5,5)
+                    })
+                }
+
+            }
+            newTopBranchesSteps.push(newTopBranches)
+        }
+        setTopBranchesSteps(newTopBranchesSteps)
+    }
+
+    const generateTopBranches = (scene, material) => {
+        let newBranchData = []
+        for (let i = 0; i < topBranchesAmount; i++){
+            newBranchData.push(generateBranchData(coreData[coreData.length - 1].vector, coreData[coreData.length - 1].width, topBranchesSteps[i]))
+            generateBranch(newBranchData[i], scene, material)
+        }
+        setTopBranchData(newBranchData)
+    }
 
     const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth) => {
         const direction = new Vector3().subVectors(pointY, pointX)
@@ -47,7 +236,7 @@ const App = () => {
         edge.position.z = (pointY.z + pointX.z) / 2
         edge.updateMatrixWorld()
         edge.updateMatrix()
-        edge.geometry.applyMatrix( edge.matrix )
+        edge.geometry.applyMatrix4( edge.matrix )
         edge.position.set( 0, 0, 0 )
         edge.rotation.set( 0, 0, 0 )
         edge.scale.set( 1, 1, 1 )
@@ -72,7 +261,8 @@ const App = () => {
     }
 
     const generateTop = (posVector, material, scene) => {
-        const topGeometry = new TetrahedronGeometry(s, 5)
+        posVector.y += 0.5
+        const topGeometry = new TetrahedronGeometry(1, 5)
         const topMesh = new Mesh(topGeometry, material)
         topMesh.position.set(posVector.x, posVector.y, posVector.z)
         const k = 2
@@ -86,11 +276,10 @@ const App = () => {
         }
         topMesh.geometry.attributes.position.needsUpdate = true
         topMesh.geometry.computeVertexNormals()
-        let xz = Math.floor(Math.random() * (6 - 4)) + 4
         topMesh.scale.set(
-            s * xz,
-            s * (Math.floor(Math.random() * (4 - 3)) + 3),
-            s * xz
+            top.x,
+            top.y,
+            top.z
         )
         scene.add(topMesh)
     }
@@ -128,24 +317,25 @@ const App = () => {
         return data
     }
 
-    const calculateTopPosition = (topCorePoint, topBranchPoint) => {
-        return new Vector3(
-            topBranchPoint.x,
-            topBranchPoint.y + ((topBranchPoint.y / 100) * 15),
-            topCorePoint.z
-        )
+    const generateTopPosition = (topBranches) => {
+        let topPositions = []
+        topBranches.forEach(branch => {
+            topPositions.push(branch[branch.length - 1].vector)
+        })
+        let avgX = 0, avgY = 0, avgZ = 0
+        topPositions.forEach(position => {
+            avgX += position.x; avgY += position.y; avgZ += position.z
+        })
+        avgX /= topPositions.length; avgY /= topPositions.length; avgZ /= topPositions.length
+        return new Vector3(avgX, avgY, avgZ)
     }
 
-    const treeGrower = () => {
-
-    }
-
-    useEffect(() => {
+    const generateModel = () => {
         const scene = new Scene()
 
         //camera
         const camera = new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000)
-        camera.position.set( 0, 40, 40 )
+        camera.position.set( 0, 20, 20 )
 
         //light
         const light = new AmbientLight( 0x404040 )
@@ -167,41 +357,18 @@ const App = () => {
         const woodMaterial = new MeshPhysicalMaterial({color: "#8f6246", flatShading: true})
         const topMaterial = new MeshPhysicalMaterial({color: "#91b341", flatShading: true})
 
-        let coreSteps = [
-            {x: s * 0.1, y: s * 1.8, z: s * 0, width: -25},
-            {x: s * 0.3, y: s * 2.8, z: s * 0, width: -15},
-            {x: s * 0.4, y: s * 2, z: s * 0, width: -10},
-            {x: s * 0.2, y: s * 1, z: s * 0, width: -5},
-            {x: s * -0.1, y: s * 1, z: s * 0, width: 0},
-            {x: s * -0.6, y: s * 2, z: s * 0, width: -5},
-            {x: s * -0.2, y: s * 2, z: s * 0, width: 0},
-        ]
 
-        let coreData = generateBranchData(new Vector3(0,0,0), s, coreSteps)
+        setCoreData(generateBranchData(new Vector3(0,0,0), trunkStartWidth, coreSteps))
         generateBranch(coreData, scene, woodMaterial)
 
-        let branch1Steps = [
-            {x: s * -0.5, y: s * 0.35, z: s * -0.3, width: -40},
-            {x: s * -0.3, y: s * 0.8, z: s * -0.2, width: -10},
-            {x: s * 0.1, y: s * 1.1, z: s * -0.2, width: -20},
-        ]
-        let branch1Data = generateBranchData(coreData[coreData.length - 1].vector, coreData[coreData.length - 1].width, branch1Steps)
-        generateBranch(branch1Data, scene, woodMaterial)
 
+        if (generation > 9) {
+            generateTopBranches(scene, topMaterial)
+        }
 
-        let branch2Steps = [
-            {x: s * 0.3, y: s * 0.2, z: s * 0.2, width: -40},
-            {x: s * 0.5, y: s * 1.1, z: s * 0.3, width: -20},
-            {x: s * 0.1, y: s * 1.3, z: s * -0.2, width: -20},
-        ]
-        let branch2Data = generateBranchData(coreData[coreData.length - 1].vector, coreData[coreData.length - 1].width, branch2Steps)
-        generateBranch(branch2Data, scene, woodMaterial)
-
-        generateTop(
-            calculateTopPosition(
-                coreData[coreData.length - 1].vector, branch1Data[branch1Data.length - 1].vector),
-                topMaterial, scene
-        )
+        if (generation > 10){
+            generateTop(generateTopPosition(topBranchesData), topMaterial, scene)
+        }
 
         //controls
         const controls = new OrbitControls( camera, renderer.domElement )
@@ -216,14 +383,18 @@ const App = () => {
         //render
         renderer.setClearColor("#3c3f41")
         renderer.render( scene, camera )
-    }, [s])
+    }
+
+
+    useEffect(() => {
+        growTree()
+    }, [])
 
     return (
         <React.Fragment>
-            <button onClick={() => setS(s + 0.1)}> Progress </button>
+            <button onClick={() => growTree()}> Progress </button>
             <div ref={container}/>
         </React.Fragment>
-
     )
 }
 
