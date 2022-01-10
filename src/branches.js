@@ -1,6 +1,7 @@
 import {CylinderGeometry, Matrix4, Object3D, Vector3} from "three";
 import * as THREE from "three";
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
+import {updateVertices} from "./globalFunctions";
 
 export const getTopVertices = (cylinder) => {
     let bottomVertices = []
@@ -34,12 +35,9 @@ export const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth) =>
     edge.position.x = (pointY.x + pointX.x) / 2
     edge.position.y = (pointY.y + pointX.y) / 2
     edge.position.z = (pointY.z + pointX.z) / 2
-    edge.updateMatrixWorld()
-    edge.updateMatrix()
-    edge.geometry.applyMatrix4( edge.matrix )
-    edge.position.set( 0, 0, 0 )
-    edge.rotation.set( 0, 0, 0 )
-    edge.scale.set( 1, 1, 1 )
+
+    updateVertices(edge)
+
     return edge
 }
 

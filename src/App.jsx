@@ -6,16 +6,16 @@ import {
     Scene,
 } from 'three'
 import {useEffect, useRef, useState} from "react"
-import {growTopBranches} from "./topBranches";
-import {generateTop, generateTopPosition} from "./treeTops";
-import {growTrunk, incrementCoreSteps} from "./trunk";
-import {getRandomNumber} from "./getRandomNumber";
-import {generateModel} from "./generateModel";
+import {generateTopBranchesSteps, generateTopBranchesTops, growTopBranches} from "./topBranches"
+import {generateTop, generateTopPosition} from "./treeTops"
+import {growTrunk, incrementCoreSteps} from "./trunk"
+import {getRandomNumber} from "./globalFunctions"
+import {generateModel} from "./generateModel"
 
 
 const App = () => {
     const [generation, setGeneration] = useState(0)
-    const container = useRef(null);
+    const container = useRef(null)
     const [coreData, setCoreData] = useState([])
     const [coreSteps, setCoreSteps] = useState([])
     const [trunkSegmentAmount, setTrunkSegmentAmount] = useState(Math.floor(getRandomNumber(6, 8)))
@@ -31,21 +31,27 @@ const App = () => {
     const [topBranchesHeights, setTopBranchesHeights] = useState([])
     const [camera, setCamera] = useState(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
     const [topBranchesTops, setTopBranchesTops] = useState([])
-    const [topBranchesAmount] = useState(Math.floor(getRandomNumber(2, 5)))
+    const [topBranchesAmount] = useState(Math.floor(getRandomNumber(3, 5)))
     const [topBranchesSteps, setTopBranchesSteps] = useState([])
     const [topBranchesData, setTopBranchData] = useState([])
     const [top, setTop] = useState({x: getRandomNumber(1.2, 1.4), y: 1, z: getRandomNumber(1.2, 1.4)})
+    const [lowestTopVertices, setLowestTopVertices] = useState()
 
     const growTree = () => {
         growTrunk(coreSteps, setCoreSteps, trunkSegmentAmount,
             generation, trunkTop, coreData, setCoreData, incrementCoreSteps, setTrunkStartWidth,
             trunkStartWidth, scene, woodMaterial)
-        growTopBranches(generation, topBranchesAmount, topBranchesRadii, setTopBranchesRadii,
-            setTopBranchesHeights, coreData, topBranchesHeights, setTopBranchesTops, topBranchesSteps,
-            setTopBranchesSteps, setTopBranchData, topMaterial, scene, top, setTop)
-        if (generation > 10){
-            generateTop(generateTopPosition(topBranchesData, top), topMaterial, scene, top)
+        if (generation > 8){
+            generateTop(coreData, top, topMaterial, scene, setLowestTopVertices)
             setTop({x: top.x + 0.06, y: top.y + 0.05, z: top.z + 0.06})
+        }
+        if (generation > 9) {
+            generateTopBranchesSteps(topBranchesAmount, generateTopBranchesTops(topBranchesAmount, lowestTopVertices), coreData, setTopBranchesSteps)
+        }
+        if (generation > 11){
+            growTopBranches(generation, topBranchesAmount, topBranchesRadii, setTopBranchesRadii,
+                setTopBranchesHeights, coreData, topBranchesHeights, setTopBranchesTops, topBranchesSteps,
+                setTopBranchesSteps, setTopBranchData, topMaterial, scene, lowestTopVertices)
         }
         generateModel(scene, setScene, container, camera, setCamera)
         setGeneration(generation + 1)

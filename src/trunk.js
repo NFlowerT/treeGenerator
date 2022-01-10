@@ -1,6 +1,6 @@
 import {generateBranch, generateBranchData} from "./branches";
 import {Vector3} from "three";
-import {getRandomNumber} from "./getRandomNumber";
+import {getRandomNumber} from "./globalFunctions";
 
 export const growTrunk = (coreSteps, setCoreSteps, trunkSegmentAmount,
                           generation, trunkTop, coreData, setCoreData, incrementCoreSteps, setTrunkStartWidth,
@@ -42,7 +42,6 @@ export const growTrunk = (coreSteps, setCoreSteps, trunkSegmentAmount,
 export const incrementCoreSteps = (height, coreSteps, setCoreSteps) => {
     let newCoreSteps = []
     coreSteps.forEach(step => {
-        console.log("step", step)
         newCoreSteps.push({
             x: step.x,
             y: step.y + height,

@@ -1,6 +1,6 @@
 import {Vector3} from "three";
-import {generateBranch, generateBranchData} from "./branches";
-import {getRandomNumber} from "./getRandomNumber";
+import {generateBranch, generateBranchData} from "./branches"
+import {getRandomNumber} from "./globalFunctions"
 
 const evenRanges = {
     0: 0,
@@ -15,16 +15,13 @@ const unevenRanges = {
     2: 1
 }
 
-export const generateTopBranchesTops = (topBranchesAmount, topBranchesRadii, coreData, topBranchesHeights) => {
-    let topBranchesTops = []
+export const generateTopBranchesTops = (topBranchesAmount, lowestTopVertices) => {
+      let topBranchesTops = []
+    let indexes = Math.floor(lowestTopVertices.length / topBranchesAmount)
     for (let i = 0; i < topBranchesAmount; i++){
-        let r = topBranchesRadii[i] * Math.sqrt(0.5)
-        let theta = i % 2 ? evenRanges[i] * 2 * Math.PI : unevenRanges[i] * 2 * Math.PI
-        const x = coreData[coreData.length - 1].vector.x + r * Math.cos(theta)
-        const z = coreData[coreData.length - 1].vector.z + r * Math.sin(theta)
-        const y = coreData[coreData.length - 1].vector.y + topBranchesHeights[i]
-        topBranchesTops.push(new Vector3(x, y, z))
+        topBranchesTops.push(lowestTopVertices[i])
     }
+    console.log("top branches tops: ", topBranchesTops)
     return(topBranchesTops)
 }
 
@@ -36,16 +33,16 @@ export const generateTopBranchesSteps = (topBranchesAmount, topBranchesTops, cor
         for (let j = 0; j < topBranchesStepsAmount; j++){
             if (j < topBranchesStepsAmount - 1){
                 newTopBranches.push({
-                    x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount) * getRandomNumber(1.1, 1.3),
+                    x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount),
                     y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
-                    z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount) * getRandomNumber(1.1, 1.3),
+                    z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount),
                     width: j === 0 ? -60 : getRandomNumber(-5,5)
                 })
             } else {
                 newTopBranches.push({
-                    x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount) * getRandomNumber(0.7, 1),
+                    x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount),
                     y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
-                    z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount) * getRandomNumber(0.7, 1),
+                    z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount),
                     width: j === 0 ? -60 : getRandomNumber(-5,5)
                 })
             }
@@ -53,6 +50,7 @@ export const generateTopBranchesSteps = (topBranchesAmount, topBranchesTops, cor
         }
         newTopBranchesSteps.push(newTopBranches)
     }
+    console.log("setting top branches steps to:", newTopBranchesSteps)
     setTopBranchesSteps(newTopBranchesSteps)
 }
 
@@ -65,7 +63,7 @@ export const generateTopBranchesHeights = (topBranchesAmount, setTopBranchesHeig
 }
 
 export const generateTopBranches = (scene, material, topBranchesAmount, generateBranchData, coreData,
-                                    topBranchesSteps, generateBranch, setTopBranchData) => {
+        topBranchesSteps, generateBranch, setTopBranchData) => {
     let newBranchData = []
     for (let i = 0; i < topBranchesAmount; i++){
         newBranchData.push(
@@ -78,33 +76,21 @@ export const generateTopBranches = (scene, material, topBranchesAmount, generate
     setTopBranchData(newBranchData)
 }
 
-export const generateTopBranchesRadii = (topBranchesAmount, setTopBranchesRadii) => {
-    let newTopBranchesRadii = []
-    for (let i = 0; i < topBranchesAmount; i++){
-        newTopBranchesRadii.push(getRandomNumber(0.9, 1.2))
-    }
-    setTopBranchesRadii(newTopBranchesRadii)
-}
-
 export const growTopBranches = (generation, topBranchesAmount, topBranchesRadii, setTopBranchesRadii,
          setTopBranchesHeights, coreData, topBranchesHeights, setTopBranchesTops, topBranchesSteps,
-         setTopBranchesSteps, setTopBranchData, topMaterial, scene, top, setTop) => {
-    if (generation === 7){
-        generateTopBranchesRadii(topBranchesAmount, setTopBranchesRadii)
-        generateTopBranchesHeights(topBranchesAmount, setTopBranchesHeights, 0.8, 1.2)
-    }
-    if (generation === 9) {
+         setTopBranchesSteps, setTopBranchData, topMaterial, scene, lowestTopVertices) => {
+    if (generation === 10) {
         generateTopBranchesSteps(topBranchesAmount,
-            generateTopBranchesTops(topBranchesAmount, topBranchesRadii, coreData, topBranchesHeights),
+            generateTopBranchesTops(topBranchesAmount, lowestTopVertices),
             coreData, setTopBranchesSteps
         )
     }
-    if (generation > 9){
+    if (generation > 11){
         incrementTopBranchesRadii(0.1, topBranchesRadii, setTopBranchesRadii)
         incrementTopBranchesHeights(0.1, topBranchesRadii, setTopBranchesRadii)
         generateTopBranchesTops(topBranchesAmount, topBranchesRadii, coreData, topBranchesHeights, setTopBranchesTops)
         generateTopBranchesSteps(topBranchesAmount,
-            generateTopBranchesTops(topBranchesAmount, topBranchesRadii, coreData, topBranchesHeights),
+            generateTopBranchesTops(topBranchesAmount, lowestTopVertices),
             coreData, setTopBranchesSteps
         )
         generateTopBranches(scene, topMaterial, topBranchesAmount, generateBranchData,
