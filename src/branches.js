@@ -3,10 +3,12 @@ import * as THREE from "three";
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
 import {updateVertices} from "./globalFunctions";
 
+const cylinderFaceAmount = 12
+
 export const getTopVertices = (cylinder) => {
     let bottomVertices = []
     let vertices = cylinder.geometry.attributes.position.array
-    for (let i = 0; i < 24; i += 3){
+    for (let i = 0; i < (cylinderFaceAmount * 3); i += 3){
         bottomVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
     }
     return bottomVertices
@@ -15,7 +17,7 @@ export const getTopVertices = (cylinder) => {
 export const getBottomVertices = (cylinder) => {
     let topVertices = []
     let vertices = cylinder.geometry.attributes.position.array
-    for (let i = vertices.length - 3; i >= vertices.length - 24; i -= 3){
+    for (let i = vertices.length - 3; i >= vertices.length - (cylinderFaceAmount * 3); i -= 3){
         topVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
     }
     return topVertices
@@ -29,7 +31,7 @@ export const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth) =>
         0, 0, 1, 0,
         0, -1, 0, 0,
         0, 0, 0, 1))
-    const edgeGeometry = new CylinderGeometry(topWidth, bottomWidth, direction.length(), 8, 1, false)
+    const edgeGeometry = new CylinderGeometry(topWidth, bottomWidth, direction.length(), 12, 1, false)
     const edge = new THREE.Mesh(edgeGeometry, material)
     edge.applyMatrix4(orientation)
     edge.position.x = (pointY.x + pointX.x) / 2
@@ -56,10 +58,10 @@ export const generateBranchData = (startingVector, startingWidth, steps) => {
     return data
 }
 
-export const generateBranch = (coreData, scene, material) => {
+export const generateBranch = (branchData, scene, material) => {
     let previousCylinder = null
-    for (let i = 0; i < coreData.length - 1; i++){
-        const cylinder = cylinderMesh(coreData[i].vector, coreData[i + 1].vector, material, coreData[i].width, coreData[i + 1].width)
+    for (let i = 0; i < branchData.length - 1; i++){
+        const cylinder = cylinderMesh(branchData[i].vector, branchData[i + 1].vector, material, branchData[i].width, branchData[i + 1].width)
         scene.add(cylinder)
         if (previousCylinder !== null) {
             let currentVertices = getBottomVertices(cylinder)

@@ -1,115 +1,58 @@
-import {Vector3} from "three";
-import {generateBranch, generateBranchData} from "./branches"
 import {getRandomNumber} from "./globalFunctions"
-
-const evenRanges = {
-    0: 0,
-    1: 1,
-    2: 0.5,
-    3: 0.25
-}
-
-const unevenRanges = {
-    0: 0.33,
-    1: 0.66,
-    2: 1
-}
+import * as THREE from "three";
 
 export const generateTopBranchesTops = (topBranchesAmount, lowestTopVertices) => {
-      let topBranchesTops = []
-    let indexes = Math.floor(lowestTopVertices.length / topBranchesAmount)
+  let topBranchesTops = []
     for (let i = 0; i < topBranchesAmount; i++){
         topBranchesTops.push(lowestTopVertices[i])
     }
-    console.log("top branches tops: ", topBranchesTops)
     return(topBranchesTops)
 }
 
-export const generateTopBranchesSteps = (topBranchesAmount, topBranchesTops, coreData, setTopBranchesSteps) => {
+export const generateTopBranchesSteps = (topBranchesAmount, topBranchesTops, coreData) => {
     let newTopBranchesSteps = []
     for (let i = 0; i < topBranchesAmount; i++){
         let topBranchesStepsAmount = Math.floor(getRandomNumber(2,4))
         let newTopBranches = []
         for (let j = 0; j < topBranchesStepsAmount; j++){
-            if (j < topBranchesStepsAmount - 1){
-                newTopBranches.push({
-                    x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount),
-                    y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
-                    z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount),
-                    width: j === 0 ? -60 : getRandomNumber(-5,5)
-                })
-            } else {
-                newTopBranches.push({
-                    x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount),
-                    y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
-                    z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount),
-                    width: j === 0 ? -60 : getRandomNumber(-5,5)
-                })
-            }
+            newTopBranches.push({
+                x: ((topBranchesTops[i].x - coreData[coreData.length - 1].vector.x) / topBranchesStepsAmount),
+                y: ((topBranchesTops[i].y - coreData[coreData.length - 1].vector.y) / topBranchesStepsAmount),
+                z: ((topBranchesTops[i].z - coreData[coreData.length - 1].vector.z) / topBranchesStepsAmount),
+                width: j === 0 ? -60 : getRandomNumber(-5,5)
+            })
 
         }
         newTopBranchesSteps.push(newTopBranches)
     }
-    console.log("setting top branches steps to:", newTopBranchesSteps)
-    setTopBranchesSteps(newTopBranchesSteps)
+    return(newTopBranchesSteps)
 }
 
-export const generateTopBranchesHeights = (topBranchesAmount, setTopBranchesHeights, min, max) => {
-    let newTopBranchesHeights = []
-    for (let i = 0; i < topBranchesAmount; i++) {
-        newTopBranchesHeights.push(getRandomNumber(min, max))
-    }
-    setTopBranchesHeights(newTopBranchesHeights)
+export const generateTopBranchData = (startPoint, endpoint, stepAmount, startingWidth) => {
+    let data = [{vector: startPoint, width: startingWidth}]
+    const curve = new THREE.CubicBezierCurve3(
+        startPoint,
+        new THREE.Vector3( startPoint.x + (endpoint.x * 0.43), startPoint.y + (endpoint.y * 0.18), endpoint.z + startPoint.z),
+        new THREE.Vector3( startPoint.x + (endpoint.x * 0.79), startPoint.y + (endpoint.y * 0.48), endpoint.z + startPoint.z),
+        endpoint
+    )
+    curve.getPoints(stepAmount).forEach(point => {
+        data.push({
+            vector: point,
+            width: startingWidth * 0.5
+        })
+    })
+    return data
 }
 
 export const generateTopBranches = (scene, material, topBranchesAmount, generateBranchData, coreData,
-        topBranchesSteps, generateBranch, setTopBranchData) => {
-    let newBranchData = []
+                                    generateBranch, lowestTopVertices) => {
     for (let i = 0; i < topBranchesAmount; i++){
-        newBranchData.push(
-            generateBranchData(
-                coreData[coreData.length - 1].vector, coreData[coreData.length - 1].width, topBranchesSteps[i]
+        let branchData = generateTopBranchData(
+                coreData[coreData.length - 1].vector, lowestTopVertices[i], 12, coreData[coreData.length - 1].width, scene
             )
-        )
-        generateBranch(newBranchData[i], scene, material)
+        generateBranch(branchData, scene, material)
+        console.log("coreData", coreData)
+        console.log(`branch data [${i}]`, branchData)
     }
-    setTopBranchData(newBranchData)
-}
-
-export const growTopBranches = (generation, topBranchesAmount, topBranchesRadii, setTopBranchesRadii,
-         setTopBranchesHeights, coreData, topBranchesHeights, setTopBranchesTops, topBranchesSteps,
-         setTopBranchesSteps, setTopBranchData, topMaterial, scene, lowestTopVertices) => {
-    if (generation === 10) {
-        generateTopBranchesSteps(topBranchesAmount,
-            generateTopBranchesTops(topBranchesAmount, lowestTopVertices),
-            coreData, setTopBranchesSteps
-        )
-    }
-    if (generation > 11){
-        incrementTopBranchesRadii(0.1, topBranchesRadii, setTopBranchesRadii)
-        incrementTopBranchesHeights(0.1, topBranchesRadii, setTopBranchesRadii)
-        generateTopBranchesTops(topBranchesAmount, topBranchesRadii, coreData, topBranchesHeights, setTopBranchesTops)
-        generateTopBranchesSteps(topBranchesAmount,
-            generateTopBranchesTops(topBranchesAmount, lowestTopVertices),
-            coreData, setTopBranchesSteps
-        )
-        generateTopBranches(scene, topMaterial, topBranchesAmount, generateBranchData,
-            coreData, topBranchesSteps, generateBranch, setTopBranchData)
-    }
-}
-
-export const incrementTopBranchesRadii = (i, topBranchesRadii, setTopBranchesRadii) => {
-    let newTopBranchesRadii = []
-    topBranchesRadii.forEach(radius => {
-        newTopBranchesRadii.push(radius + i)
-    })
-    setTopBranchesRadii(newTopBranchesRadii)
-}
-
-export const incrementTopBranchesHeights = (i, topBranchesRadii, setTopBranchesHeights) => {
-    let newTopBranchesHeights = []
-    topBranchesRadii.forEach(radius => {
-        newTopBranchesHeights.push(radius + i)
-    })
-    setTopBranchesHeights(newTopBranchesHeights)
 }

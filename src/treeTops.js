@@ -1,26 +1,8 @@
 import {Mesh, MeshBasicMaterial, SphereGeometry, TetrahedronGeometry, Vector3} from "three"
-import * as THREE from "three";
-import {updateVertices} from "./globalFunctions";
+import * as THREE from "three"
+import {updateVertices} from "./globalFunctions"
 const Simplex = require('perlin-simplex')
 const simplex = new Simplex()
-
-export const generateTopPosition = (topBranches, top) => {
-    let topPositions = []
-    topBranches.forEach(branch => {
-        topPositions.push(branch[branch.length - 1].vector)
-    })
-    let avgX = 0, avgY = 0, avgZ = 0
-    topPositions.forEach(position => {
-        avgX += position.x
-        avgY += position.y
-        avgZ += position.z
-    })
-    avgX /= topPositions.length
-    avgY /= topPositions.length
-    avgY += top.y / 5
-    avgZ /= topPositions.length
-    return new Vector3(avgX, avgY, avgZ)
-}
 
 export const generateTop = (coreData, top, material, scene, setLowestTopVertices) => {
     const trunkTop = coreData[coreData.length - 1].vector
@@ -52,7 +34,7 @@ export const generateTop = (coreData, top, material, scene, setLowestTopVertices
 
     scene.add(topMesh)
 
-    setLowestTopVertices(getLowestTopVertices(topMesh, scene))
+    return(getLowestTopVertices(topMesh, scene))
 }
 
 export const getLowestTopVertices = (topMesh, scene) => {
@@ -65,11 +47,11 @@ export const getLowestTopVertices = (topMesh, scene) => {
     lowestTopVertices = lowestTopVertices.filter((v,i,a)=>a.findIndex(t=>(t.x===v.x && t.y===v.y && t.z === v.z))===i)
     lowestTopVertices.splice(15, lowestTopVertices.length - 15)
 
-    lowestTopVertices.forEach(v => {
-        let geometry = new SphereGeometry(0.1, 30,30)
-        let mesh = new Mesh(geometry, new MeshBasicMaterial())
-        scene.add(mesh)
-        mesh.position.set(v.x, v.y, v.z)
-    })
+    // lowestTopVertices.forEach(v => {
+    //     let geometry = new SphereGeometry(0.1, 30,30)
+    //     let mesh = new Mesh(geometry, new MeshBasicMaterial())
+    //     scene.add(mesh)
+    //     mesh.position.set(v.x, v.y, v.z)
+    // })
     return lowestTopVertices
 }
