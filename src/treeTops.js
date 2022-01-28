@@ -4,13 +4,12 @@ import {updateVertices} from "./globalFunctions"
 const Simplex = require('perlin-simplex')
 const simplex = new Simplex()
 
-export const generateTop = (coreData, top, material, scene, setLowestTopVertices) => {
-    const trunkTop = coreData[coreData.length - 1].vector
+export const generateTop = (trunkTop, treeTopDimensions, material, scene, setLowestTopVertices) => {
     const topGeometry = new TetrahedronGeometry(1, 5)
     const topMesh = new Mesh(topGeometry, material)
     const k = 2
     const vertices = topMesh.geometry.attributes.position.array;
-    topMesh.position.set(trunkTop.x, trunkTop.y + 3, trunkTop.z)
+    topMesh.position.set(trunkTop.x, trunkTop.y, trunkTop.z)
     topMesh.geometry.attributes.position.array.needsUpdate = true
     let newVertices = new Float32Array(vertices.length)
 
@@ -25,9 +24,9 @@ export const generateTop = (coreData, top, material, scene, setLowestTopVertices
     topMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(newVertices, 3));
 
     topMesh.scale.set(
-        top.x,
-        top.y,
-        top.z
+        treeTopDimensions.x,
+        treeTopDimensions.y,
+        treeTopDimensions.z
     )
 
     updateVertices(topMesh)
@@ -53,5 +52,6 @@ export const getLowestTopVertices = (topMesh, scene) => {
     //     scene.add(mesh)
     //     mesh.position.set(v.x, v.y, v.z)
     // })
+
     return lowestTopVertices
 }

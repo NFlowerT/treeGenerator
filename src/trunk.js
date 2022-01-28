@@ -1,53 +1,60 @@
 import {generateBranch, generateBranchData} from "./branches";
-import {Vector3} from "three";
-import {getRandomNumber} from "./globalFunctions";
+import {CylinderGeometry, Mesh, Vector3} from "three";
+import {getRandomNumber, getVertices, updateVertices} from "./globalFunctions";
+import {cylinderFaceAmount} from "./App";
+import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
+import * as THREE from "three";
+const Simplex = require('perlin-simplex')
 
-export const growTrunk = (coreSteps, setCoreSteps, trunkSegmentAmount,
-                          generation, trunkTop, coreData, setCoreData, incrementCoreSteps, setTrunkStartWidth,
-                          trunkStartWidth, scene, material
-    ) => {
-    if (coreSteps.length === 0) {
-        setCoreSteps(coreSteps.concat({
-            x: 0,
-            y: getRandomNumber(0.3, 0.6),
-            z: 0,
-            width: -20
-        }))
-    } else if (coreSteps.length < trunkSegmentAmount) {
-        if (generation % 4 === 0) {
-            if (coreSteps.length < Math.floor(trunkSegmentAmount / 2)) {
-                setCoreSteps(coreSteps.concat({
-                    x: getRandomNumber(-0.1, 0.1),
-                    y: getRandomNumber(0.4, 1),
-                    z: getRandomNumber(-0.1, 0.1),
-                    width: getRandomNumber(-15, 1)
-                }))
-            } else {
-                setCoreSteps(coreSteps.concat({
-                    x: ((trunkTop.x - coreData[Math.floor(trunkSegmentAmount / 2)].vector.x / Math.floor(trunkSegmentAmount / 2))),
-                    y: getRandomNumber(0.5, 1),
-                    z: ((trunkTop.z - coreData[Math.floor(trunkSegmentAmount / 2)].vector.z / Math.floor(trunkSegmentAmount / 2))),
-                    width: getRandomNumber(-15, 5)
-                }))
-            }
-        }
-    } else {
-        incrementCoreSteps(0.01, coreSteps, setCoreSteps)
-        setTrunkStartWidth(trunkStartWidth + 0.02)
+export const generateTrunk = (startPoint, endPoint, segmentAmount, width, scene, material) => {
+    let pointArray = []
+    let meshArray = []
+    for (let i = 0; i <= segmentAmount; i++){
+        pointArray.push(
+            new Vector3(
+                startPoint.x,
+                startPoint.y + (endPoint.y / segmentAmount) * i,
+                startPoint.z
+            )
+        )
     }
-    setCoreData(generateBranchData(new Vector3(0,0,0), trunkStartWidth, coreSteps))
-    generateBranch(coreData, scene, material)
-}
+    let lastMesh
 
-export const incrementCoreSteps = (height, coreSteps, setCoreSteps) => {
-    let newCoreSteps = []
-    coreSteps.forEach(step => {
-        newCoreSteps.push({
-            x: step.x,
-            y: step.y + height,
-            z: step.z,
-            width: step.width
-        })
+    pointArray.forEach(point => {
+        let geometry = new CylinderGeometry(width, width, 0, cylinderFaceAmount)
+        let mesh = new Mesh(geometry, material)
+        mesh.position.set(point.x, point.y, point.z)
+
+        let vertices = mesh.geometry.attributes.position.array
+        let newVertices = new Float32Array(vertices.length)
+        const simplex = new Simplex()
+        for (let i = 0; i <= vertices.length; i += 3) {
+            let p = new Vector3(vertices[i],vertices[i + 1],vertices[i + 2])
+            p.normalize().multiplyScalar(1 + 0.2 * simplex.noise(p.x * 2, p.y * 2))
+            newVertices[i] = p.x
+            newVertices[i + 1] = p.y
+            newVertices[i + 2] = p.z
+        }
+        mesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(newVertices, 3))
+
+        updateVertices(mesh)
+        mesh.scale.set(0.7, 1, 0.7)
+
+        scene.add(mesh)
+        lastMesh = mesh
+        meshArray.push(mesh)
     })
-    setCoreSteps(newCoreSteps)
+
+    for (let i = 1; i < meshArray.length; i++) {
+        let meshes = [meshArray[i - 1], meshArray[i]]
+        let vertices = []
+        meshes.forEach(mesh => {
+            vertices = vertices.concat(getVertices(mesh))
+        })
+        const geometry = new ConvexGeometry( vertices )
+        const mesh = new THREE.Mesh( geometry, material )
+        mesh.scale.set(0.7, 1, 0.7)
+        scene.add( mesh )
+    }
+    return lastMesh
 }

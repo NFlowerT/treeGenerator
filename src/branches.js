@@ -1,46 +1,19 @@
-import {CylinderGeometry, Matrix4, Object3D, Vector3} from "three";
+import {CylinderGeometry, Matrix4, Mesh, MeshBasicMaterial, Object3D, Vector3} from "three";
 import * as THREE from "three";
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
-import {updateVertices} from "./globalFunctions";
+import {getVertices, updateVertices} from "./globalFunctions";
+import {cylinderFaceAmount} from "./App";
 
-const cylinderFaceAmount = 12
 
-export const getTopVertices = (cylinder) => {
-    let bottomVertices = []
-    let vertices = cylinder.geometry.attributes.position.array
-    for (let i = 0; i < (cylinderFaceAmount * 3); i += 3){
-        bottomVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
-    }
-    return bottomVertices
-}
 
-export const getBottomVertices = (cylinder) => {
-    let topVertices = []
-    let vertices = cylinder.geometry.attributes.position.array
-    for (let i = vertices.length - 3; i >= vertices.length - (cylinderFaceAmount * 3); i -= 3){
-        topVertices.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
-    }
-    return topVertices
-}
 
-export const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth) => {
-    const direction = new Vector3().subVectors(pointY, pointX)
-    const orientation = new Matrix4()
-    orientation.lookAt(pointX, pointY, new Object3D().up)
-    orientation.multiply(new Matrix4().set(1, 0, 0, 0,
-        0, 0, 1, 0,
-        0, -1, 0, 0,
-        0, 0, 0, 1))
-    const edgeGeometry = new CylinderGeometry(topWidth, bottomWidth, direction.length(), 12, 1, false)
-    const edge = new THREE.Mesh(edgeGeometry, material)
-    edge.applyMatrix4(orientation)
-    edge.position.x = (pointY.x + pointX.x) / 2
-    edge.position.y = (pointY.y + pointX.y) / 2
-    edge.position.z = (pointY.z + pointX.z) / 2
+export const cylinderMesh = (pointX, pointY, material, width) => {
+    const geometry = new CylinderGeometry(width, width, 0, 9)
+    const mesh = new Mesh(geometry, material)
+    mesh.position.set(pointX.x, pointX.y, pointX.z)
+    updateVertices(mesh)
 
-    updateVertices(edge)
-
-    return edge
+    return mesh
 }
 
 export const generateBranchData = (startingVector, startingWidth, steps) => {
@@ -60,17 +33,20 @@ export const generateBranchData = (startingVector, startingWidth, steps) => {
 
 export const generateBranch = (branchData, scene, material) => {
     let previousCylinder = null
+    let data = []
     for (let i = 0; i < branchData.length - 1; i++){
         const cylinder = cylinderMesh(branchData[i].vector, branchData[i + 1].vector, material, branchData[i].width, branchData[i + 1].width)
         scene.add(cylinder)
         if (previousCylinder !== null) {
-            let currentVertices = getBottomVertices(cylinder)
-            let previousVertices = getTopVertices(previousCylinder)
+            let currentVertices = getVertices(cylinder)
+            let previousVertices = getVertices(previousCylinder)
             let allVertices = [...currentVertices, ...previousVertices]
             const geometry = new ConvexGeometry( allVertices )
             const mesh = new THREE.Mesh( geometry, material )
             scene.add( mesh )
         }
+        data.push(cylinder)
         previousCylinder = cylinder
     }
+    return data
 }
