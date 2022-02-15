@@ -21,22 +21,14 @@ const App = () => {
     const [woodMaterial] = useState(new MeshPhysicalMaterial({color: "#8f6246", flatShading: true}))
     const [topMaterial] = useState(new MeshPhysicalMaterial({color: "#91b341", flatShading: true}))
     const [scene, setScene] = useState(new Scene())
-    const [trunkTop, setTrunkTop] = useState(new Vector3(0,18,0))
+    const [trunkTop, setTrunkTop] = useState(new Vector3(0,4,0))
     const [camera, setCamera] = useState(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
     // const [topBranchesAmount] = useState(Math.floor(getRandomNumber(3, 5)))
-    const [treeTopDimensions, setTreeTopDimensions] = useState({x: getRandomNumber(5, 6), y: 4, z: getRandomNumber(5, 6)})
 
 
     const growTree = () => {
-        let trunkTopMesh = generateTrunk(new Vector3(0,0,0), trunkTop, 5, .4, scene, woodMaterial)
-        let lowestTopVertices = generateTop(trunkTop, treeTopDimensions, topMaterial, scene)
-        let topBranchesData = [
-            [0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.1, 0.1],
-            [0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.1, 0.1],
-            [0.5, 0.5, 0.5, 0.5, 0.4, 0.4, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35,   0.1, 0.1],
-        ]
-        let bottomMeshes = generateTopBranches(new Vector3(0, 9,0), lowestTopVertices, topBranchesData, scene, woodMaterial)
-        // connectTrunkWithBranches(trunkTopMesh, bottomMeshes, scene, woodMaterial)
+        let trunkTopMesh = generateTrunk(new Vector3(0,0,0), trunkTop, 3, 1, scene, woodMaterial, 0.83)
+        generateTop(trunkTop, {x: 3, y: 1, z: 3}, topMaterial, scene)
         generateModel(scene, setScene, container, camera, setCamera)
         setGeneration(generation + 1)
     }
