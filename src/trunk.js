@@ -1,6 +1,6 @@
 import {generateBranch, generateBranchData} from "./branches";
-import {CylinderGeometry, Mesh, Vector3} from "three";
-import {getRandomNumber, getVertices, updateVertices} from "./globalFunctions";
+import {CylinderGeometry, Mesh, Vector3, Group} from "three";
+import {getRandomFloat, getVertices, updateVertices} from "./globalFunctions";
 import {cylinderFaceAmount} from "./App";
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
 import * as THREE from "three";
@@ -19,13 +19,14 @@ export const generateTrunk = (startPoint, endPoint, segmentAmount, width, scene,
             )
         )
     }
-    let lastMesh
+
+    const group = new Group()
 
     pointArray.forEach((point, i) => {
         let geometry = new CylinderGeometry(calcWidth, calcWidth, 0, cylinderFaceAmount)
         let mesh = new Mesh(geometry, material)
         mesh.position.set(point.x, point.y, point.z)
-
+        mesh.scale.set(1, 1, 1)
         let vertices = mesh.geometry.attributes.position.array
         let newVertices = new Float32Array(vertices.length)
         const simplex = new Simplex()
@@ -41,8 +42,7 @@ export const generateTrunk = (startPoint, endPoint, segmentAmount, width, scene,
         updateVertices(mesh)
         mesh.scale.set(0.7, 1, 0.7)
 
-        scene.add(mesh)
-        lastMesh = mesh
+        group.add(mesh)
         meshArray.push(mesh)
         calcWidth *= shrink
     })
@@ -56,7 +56,8 @@ export const generateTrunk = (startPoint, endPoint, segmentAmount, width, scene,
         const geometry = new ConvexGeometry( vertices )
         const mesh = new THREE.Mesh( geometry, material )
         mesh.scale.set(0.7, 1, 0.7)
-        scene.add( mesh )
+        group.add( mesh )
     }
-    return lastMesh
+    scene.add(group)
+    return group
 }

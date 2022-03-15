@@ -1,4 +1,4 @@
-import {getRandomNumber, getVertices, updateVertices} from "./globalFunctions"
+import {getRandomFloat, getVertices, updateVertices} from "./globalFunctions"
 import * as THREE from "three";
 import {CylinderGeometry, Mesh, Vector3, SphereGeometry, MeshBasicMaterial} from "three";
 import {cylinderFaceAmount} from "./App";
@@ -93,8 +93,8 @@ export const generateTopBranches = (startPoint, lowestTopVertices, topBranchesDa
         let meshArray = []
         const curve = new THREE.CubicBezierCurve3(
             startPoint,
-            new THREE.Vector3( startPoint.x, startPoint.y + (endPoint.y * getRandomNumber(0.1, 0.3)), startPoint.z),
-            new THREE.Vector3( endPoint.x, startPoint.y + (endPoint.y * getRandomNumber(0.1, 0.3)), endPoint.z),
+            new THREE.Vector3( startPoint.x, startPoint.y + (endPoint.y * getRandomFloat(0.1, 0.3)), startPoint.z),
+            new THREE.Vector3( endPoint.x, startPoint.y + (endPoint.y * getRandomFloat(0.1, 0.3)), endPoint.z),
             endPoint
         )
 

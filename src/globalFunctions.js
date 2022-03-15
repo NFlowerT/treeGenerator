@@ -3,8 +3,14 @@ import {Vector3} from "three";
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
 import * as THREE from "three";
 
-export const getRandomNumber = (min, max) => {
+export const getRandomFloat = (min, max) => {
     return Math.random() * (max - min) + min
+}
+
+function getRandomInt(min, max) {
+    min = Math.ceil(min)
+    max = Math.floor(max)
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export const updateVertices = (mesh) => {
@@ -16,7 +22,6 @@ export const updateVertices = (mesh) => {
     mesh.updateMatrix()
 }
 
-
 export const getVertices = (cylinder) => {
     let verticesArray = []
     let vertices = cylinder.geometry.attributes.position.array
@@ -24,15 +29,4 @@ export const getVertices = (cylinder) => {
         verticesArray.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
     }
     return verticesArray
-}
-
-export const connectTrunkWithBranches = (trunkTop, branchBottoms, scene, material) => {
-    let vertices = []
-    vertices = vertices.concat(getVertices(trunkTop))
-    branchBottoms.forEach(branchBottom => {
-        vertices = vertices.concat(getVertices(branchBottom))
-    })
-    const geometry = new ConvexGeometry( vertices )
-    const mesh = new THREE.Mesh( geometry, material )
-    scene.add( mesh )
 }
