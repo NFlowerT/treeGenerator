@@ -30,14 +30,14 @@ const App = () => {
     const [woodMaterial] = useState(new MeshPhysicalMaterial({color: trunkColors[Math.floor(getRandomFloat(0, trunkColors.length))], flatShading: true}))
     const [topMaterial] = useState((new MeshPhysicalMaterial({color: topColors[Math.floor(getRandomFloat(0, topColors.length))], flatShading: true})))
     useEffect(() => {
-        growTree(); setScale(scale + 0.1)
+        growTree()
     }, [])
     const container = useRef(null)
     const [scene, setScene] = useState(new Scene())
     const [camera, setCamera] = useState(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
     // const [topBranchesAmount] = useState(Math.floor(getRandomNumber(3, 5)))
 
-    const [scale, setScale] = useState(0.1)
+    const [scale, setScale] = useState(1)
     const growTree = () => {
         let trunkTop = new Vector3(0, 4, 0)
         let trunkMesh = generateTrunk(new Vector3(0,0,0), trunkTop, 3, 1, scene, woodMaterial, 0.83)
@@ -48,13 +48,11 @@ const App = () => {
         group.scale.set(scale, scale, scale)
         scene.add(group)
         generateModel(scene, setScene, container, camera, setCamera)
-        setScale(scale + 0.1)
-
-    }
+         }
 
     return (
         <React.Fragment>
-            <button onClick={() => {growTree(); setScale(scale + 0.1)}}> Progress </button>
+            <button onClick={() => {growTree()}}> Progress </button>
             <div ref={container}/>
         </React.Fragment>
     )
