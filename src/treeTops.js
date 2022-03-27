@@ -1,10 +1,18 @@
 import {
     CylinderGeometry,
     Mesh,
-    Group
+    Group, MeshPhysicalMaterial
 } from "three"
-import {getRandomInt, updateVertices} from "./globalFunctions"
+import {convertVerticesToVectors, getMatchingVertices, convertVectorsToVertices,updateVertices} from "./globalFunctions"
 import * as THREE from "three"
+
+const decoder = (string, trunkTop) => {
+    let splitData = string.split("&")
+    return ({
+        color: splitData[0],
+        data: convertStringToData(splitData[1], trunkTop)
+    })
+}
 
 const convertStringToNumber = (s) => {
     var total = 0
@@ -34,10 +42,10 @@ const convertStringToData = (string, trunkTop) => {
     return data
 }
 
-export const generateTop = (trunkTop, treeTopDimensions, material, scene) => {
-    const dataInString = "4.2|3|2|x|y|z|4,4|2|2.8|x|y+2|z|5,4|2|2.8|x|y+4|z|0,4|2|2.8|x|y+6|z|0"
-    const data = convertStringToData(dataInString, trunkTop)
+export const generateTop = (trunkTop, scene, topData) => {
+    let {color, data} = decoder(topData, trunkTop)
 
+    const material = new MeshPhysicalMaterial({color: parseInt(color.replace("#","0x"),16), flatShading: true})
     const group = new Group()
     data.forEach((item, i) => {
         const topGeometry = new CylinderGeometry(item.topRadius, item.bottomRadius, item.height, 10)
@@ -60,9 +68,8 @@ export const modifyVertices = (topMesh, scene, lastVerticle) => {
     vertices.sort((a, b) => a.y > b.y ? 1 : a.y < b.y ? -1 : 0)
 
     for (let i = 0; i < 12; i += 2){
-        let y = getRandomInt(0.5, 1.2)
         getMatchingVertices(vertices, i).forEach(index => {
-            vertices[index].y -= y
+            vertices[index].y -= 0.7
         })
     }
 
@@ -83,29 +90,4 @@ export const modifyVertices = (topMesh, scene, lastVerticle) => {
 }
 
 
-const convertVerticesToVectors = (verticesArray) => {
-    let vertices = []
-    for (let i = 0; i < verticesArray.length; i += 3){
-        vertices.push({x: verticesArray[i], y: verticesArray[i + 1], z: verticesArray[i + 2], index: i})
-    }
-    return vertices
-}
 
-const convertVectorsToVertices = (vectorArray) => {
-    let verticesArray = []
-    vectorArray.sort((a, b) => a.index > b.index ? 1 : a.index < b.index ? -1 : 0)
-    vectorArray.forEach((vector) => {
-        verticesArray.push(vector.x, vector.y, vector.z)
-    })
-    return verticesArray
-}
-
-const getMatchingVertices = (vertices, index) => {
-    let indexArray = []
-    vertices.forEach((verticle, i) => {
-        if (vertices[index].x === verticle.x && vertices[index].y === verticle.y && vertices[index].z === verticle.z){
-            indexArray.push(i)
-        }
-    })
-    return indexArray
-}

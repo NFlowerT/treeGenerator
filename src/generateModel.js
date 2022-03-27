@@ -7,7 +7,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
 
     //camera
     setCamera(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    camera.position.set( 20, 20, 20 )
+    camera.position.set( 80, 80, 80 )
 
     //light
     const light = new AmbientLight( 0x404040 )
@@ -20,7 +20,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     scene.add( directionalLight2 )
 
     //renderer
-    const renderer = new WebGL1Renderer()
+    const renderer = new WebGL1Renderer({alpha: true})
     renderer.setSize( window.innerWidth, window.innerHeight )
     container.current.innerHTML = ""
     container.current.appendChild( renderer.domElement )
@@ -36,6 +36,5 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     controls.addEventListener( 'change', () => {renderer.render(scene, camera)} )
 
     //render
-    renderer.setClearColor("#3c3f41")
     renderer.render( scene, camera )
 }

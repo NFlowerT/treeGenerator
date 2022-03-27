@@ -30,3 +30,30 @@ export const getVertices = (cylinder) => {
     }
     return verticesArray
 }
+
+export const convertVerticesToVectors = (verticesArray) => {
+    let vertices = []
+    for (let i = 0; i < verticesArray.length; i += 3){
+        vertices.push({x: verticesArray[i], y: verticesArray[i + 1], z: verticesArray[i + 2], index: i})
+    }
+    return vertices
+}
+
+export const convertVectorsToVertices = (vectorArray) => {
+    let verticesArray = []
+    vectorArray.sort((a, b) => a.index > b.index ? 1 : a.index < b.index ? -1 : 0)
+    vectorArray.forEach((vector) => {
+        verticesArray.push(vector.x, vector.y, vector.z)
+    })
+    return verticesArray
+}
+
+export const getMatchingVertices = (vertices, index) => {
+    let indexArray = []
+    vertices.forEach((verticle, i) => {
+        if (vertices[index].x === verticle.x && vertices[index].y === verticle.y && vertices[index].z === verticle.z){
+            indexArray.push(i)
+        }
+    })
+    return indexArray
+}
