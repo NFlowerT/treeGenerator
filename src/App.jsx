@@ -40,7 +40,7 @@ const App = () => {
     const container = useRef(null)
 
     const createIsland = () => {
-        const mesh = new Mesh(new DodecahedronGeometry(50, 2), new MeshPhysicalMaterial({color: "#3e5e4e", flatShading: true}));
+        const mesh = new Mesh(new DodecahedronGeometry(50, 2), new MeshPhysicalMaterial({color: "#95bc82", flatShading: true}));
         let vertices = convertVerticesToVectors(mesh.geometry.attributes.position.array)
         let flatVertices = []
         vertices.forEach((verticle, i) => {

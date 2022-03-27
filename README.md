@@ -20,3 +20,6 @@
 	4|2|2.8|x|y+6|z|0  ->  segment 4 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
 ```
 
+##Tapeta
+
+https://uploads-ssl.webflow.com/5d64ad209093d7b315c3591a/5e9697299bac7ccab1b35410_unity-game-asset-low-poly-modular-terrain-pack-very-large_2.jpg
