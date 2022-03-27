@@ -1,50 +1,47 @@
 import {
     CylinderGeometry,
     Mesh,
-    Vector3,
-    Group, SphereGeometry, MeshBasicMaterial
+    Group
 } from "three"
-import {getRandomFloat, getRandomInt, updateVertices} from "./globalFunctions";
-import * as THREE from "three";
-import Simplex from "perlin-simplex";
+import {getRandomInt, updateVertices} from "./globalFunctions"
+import * as THREE from "three"
+
+const convertStringToNumber = (s) => {
+    var total = 0
+    s = s.replace(/\s/g, '').match(/[+\-]?([0-9\.\s]+)/g) || []
+    while(s.length) total += parseFloat(s.shift())
+    return total
+}
+
+const convertStringToData = (string, trunkTop) => {
+    let data = []
+    string.split(",").forEach(item => {
+        item = item.replace("x", trunkTop.x)
+        item = item.replace("y", trunkTop.y)
+        item = item.replace("z", trunkTop.z)
+        let itemArray = item.split("|")
+        itemArray = itemArray.map(i => convertStringToNumber(i))
+        data.push({
+            bottomRadius: itemArray[0],
+            topRadius: itemArray[1],
+            height: itemArray[2],
+            x: itemArray[3],
+            y: itemArray[4],
+            z: itemArray[5],
+            rotationX: itemArray[6],
+        })
+    })
+    return data
+}
 
 export const generateTop = (trunkTop, treeTopDimensions, material, scene) => {
-    const segmentAmount = 10
-    let data = [
-        {
-            bottomRadius: 4,
-            topRadius: 2,
-            height: 2.8,
-            x: trunkTop.x,
-            y: trunkTop.y,
-            z: trunkTop.z,
-            rotationX: getRandomFloat(0, 5),
-        },
-        {
-            bottomRadius: 4,
-            topRadius: 2,
-            height: 2.8,
-            x: trunkTop.x,
-            y: trunkTop.y + 2,
-            z: trunkTop.z,
-            rotationX: 5,
-        },
-        {
-            bottomRadius: 4,
-            topRadius: 2,
-            height: 2.8,
-            x: trunkTop.x,
-            y: trunkTop.y + 4,
-            z: trunkTop.z,
-            rotationX: 0,
-        },
-    ]
+    const dataInString = "4.2|3|2|x|y|z|4,4|2|2.8|x|y+2|z|5,4|2|2.8|x|y+4|z|0,4|2|2.8|x|y+6|z|0"
+    const data = convertStringToData(dataInString, trunkTop)
 
     const group = new Group()
     data.forEach((item, i) => {
-        const topGeometry = new CylinderGeometry(item.topRadius, item.bottomRadius, item.height, segmentAmount)
+        const topGeometry = new CylinderGeometry(item.topRadius, item.bottomRadius, item.height, 10)
         const topMesh = new Mesh(topGeometry, material)
-
         topMesh.position.set(item.x, item.y, item.z)
         updateVertices(topMesh)
         modifyVertices(topMesh, scene, i === (data.length - 1))
@@ -75,20 +72,12 @@ export const modifyVertices = (topMesh, scene, lastVerticle) => {
 
     if (lastVerticle){
         getMatchingVertices(vertices, 45).forEach(index => {
-            vertices[index].y += 4.4
+            vertices[index].y += 3.6
             vertices[index].x += 0.3
         })
     }
 
     topMesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(convertVectorsToVertices(vertices), 3))
-
-    // vertices.forEach((item, i) => {
-    //     const mesh = new Mesh(new SphereGeometry(0.4), new MeshBasicMaterial())
-    //     mesh.position.set(item.x, item.y, item.z)
-    //     scene.add(mesh)
-    // })
-
-    console.log(vertices)
 
     return vertices
 }

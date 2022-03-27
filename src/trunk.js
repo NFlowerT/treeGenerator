@@ -1,9 +1,8 @@
-import {generateBranch, generateBranchData} from "./branches";
-import {CylinderGeometry, Mesh, Vector3, Group} from "three";
-import {getRandomFloat, getVertices, updateVertices} from "./globalFunctions";
-import {cylinderFaceAmount} from "./App";
-import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
-import * as THREE from "three";
+import {CylinderGeometry, Mesh, Vector3, Group} from "three"
+import {getVertices, updateVertices} from "./globalFunctions"
+import {cylinderFaceAmount} from "./App"
+import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry"
+import * as THREE from "three"
 const Simplex = require('perlin-simplex')
 
 export const generateTrunk = (startPoint, endPoint, segmentAmount, width, scene, material, shrink) => {
@@ -30,6 +29,7 @@ export const generateTrunk = (startPoint, endPoint, segmentAmount, width, scene,
         let vertices = mesh.geometry.attributes.position.array
         let newVertices = new Float32Array(vertices.length)
         const simplex = new Simplex()
+        console.log("simplex", simplex)
         for (let i = 0; i <= vertices.length; i += 3) {
             let p = new Vector3(vertices[i],vertices[i + 1],vertices[i + 2])
             p.normalize().multiplyScalar(calcWidth + 0.2 * simplex.noise(p.x * 2, p.y * 2))
