@@ -26,27 +26,6 @@
 2  ->  obrot z
 ```
 
-```text
-#593e30 & -> kolor pnia
-0.7 & -> szerokość pnia
-0.83 & -> shrink pnia
-    0.44|0.00|0|60.50, -> segment 1 pnia (x, y, z, seed)
-    0.19|2.00|0|82.22,
-    0.39|4.00|0|86.67
-^
-#1e2309 &  -> kolor góry
-3.3 &  ->  wysokosc czubka
-0 & -> offsetX czubka
-0 & -> offsetY czubka
-4.3|2.87|2.1|x|y+1.80|z|0, ->  segment 1 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
-4.05|2.70|1.9|x|y+1.60|z|0,
-4.2|2.80|1.9|x|y+1.60|z|0,
-4.05|2.70|2.1|x|y+1.80|z|0
-^
--2 &
-0
-```
-
 ##Tapeta
 
 https://uploads-ssl.webflow.com/5d64ad209093d7b315c3591a/5e9697299bac7ccab1b35410_unity-game-asset-low-poly-modular-terrain-pack-very-large_2.jpg
