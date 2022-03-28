@@ -86,6 +86,7 @@ const App = () => {
         for (let i = 0; i < 10; i++){
             growTree(i)
         }
+        // growTree(1)
         generateModel(scene, setScene, container, camera, setCamera)
     }, [])
 
@@ -100,8 +101,8 @@ const App = () => {
 
     return (
         <React.Fragment>
-            <BsArrowsMove style={style} className={"moveButton"}/>
-            <div ref={container}/>
+            {window.innerWidth <= 1000 && <BsArrowsMove style={style} className={"moveButton"}/>}
+            <div ref={container} style={window.innerWidth > 1000 ? {backgroundImage: "url('https://uploads-ssl.webflow.com/5d64ad209093d7b315c3591a/5e9697299bac7ccab1b35410_unity-game-asset-low-poly-modular-terrain-pack-very-large_2.jpg')"} : {}}/>
         </React.Fragment>
     )
 }

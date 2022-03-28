@@ -12,7 +12,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     //light
     const light = new AmbientLight( 0x404040 )
     scene.add( light )
-    const directionalLight1 = new DirectionalLight( 0xffffff, 0.8 )
+    const directionalLight1 = new DirectionalLight( 0xffffff, 1.1 )
     directionalLight1.position.set(-5, 2, 8)
     scene.add( directionalLight1 )
     const directionalLight2 = new DirectionalLight( 0xffffff, 0.5 )
@@ -36,5 +36,6 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     controls.addEventListener( 'change', () => {renderer.render(scene, camera)} )
 
     //render
+
     renderer.render( scene, camera )
 }

@@ -14,15 +14,11 @@
 }
 
 body {
-
   overflow: hidden;
   box-sizing: border-box;
-  width: 400px;
-  height: 400px;
   border-radius: 10px;
   -webkit-border-radius:10px;
   -moz-border-radius:10px;
-
 }
 
 #root{
