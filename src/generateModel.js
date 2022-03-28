@@ -30,7 +30,6 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
-        RIGHT: THREE.MOUSE.PAN
     }
     controls.update()
     controls.addEventListener( 'change', () => {renderer.render(scene, camera)} )

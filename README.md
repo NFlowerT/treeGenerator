@@ -5,19 +5,46 @@
 ```text
 "#6e3b1c&0.7&0.83&0.16|0|0|61.4,0|1.3|0|29.45,0.42|2.6|0|23.25,0.17|4|0|88.68^#91b341&4.2|3|2|x|y|z|0,4|2|2.8|x|y+2|z|5,4|2|2.8|x|y+4|z|0,4|2|2.8|x|y+6|z|0"
 
-#6e3b1c &  ->  kolor pnia
-0.7 &  ->  szerokość pnia
-0.83 &  ->  shrink pnia
-	0.16|0|0|61.4,  ->  segment 1 pnia (x, y, z, seed)
+#6e3b1c &  ->  kolor pnia x
+0.7 &  ->  szerokość pnia x
+0.83 &  ->  shrink pnia x
+	0.16|0|0|61.4,  ->  segment 1 pnia (x, y, z, seed) x
 	0|1.3|0|29.45,  ->  segment 2 pnia (x, y, z, seed)
 	0.42|2.6|0|23.25,  ->  segment 3 pnia (x, y, z, seed)
 	0.17|4|0|88.68  ->  segment 4 pnia (x, y, z, seed)
 ^
-#91b341 &  ->  kolor góry
-	4.2|3|2|x|y|z|0,  ->  segment 1 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
+#91b341 &  ->  kolor góry x
+3 &  ->  wysokosc czubka
+0.3 &  ->  offsetX czubka
+0.3 &  ->  offsetZ czubka
+	4.2|2.8|2|x|y|z|0,  ->  segment 1 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
 	4|2|2.8|x|y+2|z|5,  ->  segment 2 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
-	4|2|2.8|x|y+4|z|0,  ->  segment 3 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
-	4|2|2.8|x|y+6|z|0  ->  segment 4 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
+	3.8|2|2.8|x|y+4|z|0,  ->  segment 3 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
+	3.6|2|2.8|x|y+6|z|0  ->  segment 4 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
+^
+2 &  ->  obrot x
+2  ->  obrot z
+```
+
+```text
+#593e30 & -> kolor pnia
+0.7 & -> szerokość pnia
+0.83 & -> shrink pnia
+    0.44|0.00|0|60.50, -> segment 1 pnia (x, y, z, seed)
+    0.19|2.00|0|82.22,
+    0.39|4.00|0|86.67
+^
+#1e2309 &  -> kolor góry
+3.3 &  ->  wysokosc czubka
+0 & -> offsetX czubka
+0 & -> offsetY czubka
+4.3|2.87|2.1|x|y+1.80|z|0, ->  segment 1 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi X)
+4.05|2.70|1.9|x|y+1.60|z|0,
+4.2|2.80|1.9|x|y+1.60|z|0,
+4.05|2.70|2.1|x|y+1.80|z|0
+^
+-2 &
+0
 ```
 
 ##Tapeta

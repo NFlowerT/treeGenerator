@@ -22,13 +22,15 @@ import {
 import * as THREE from "three";
 import {makeNoise2D, makeNoise3D} from "open-simplex-noise";
 import {BsArrowsMove} from "react-icons/bs"
+import {generate} from "./generators";
 export const cylinderFaceAmount = 12
 
 const decoder = (data) => {
     const splitData = data.split("^")
     return ({
         trunkData: splitData[0],
-        topData: splitData[1]
+        topData: splitData[1],
+        treeData: splitData[2]
     })
 }
 
@@ -71,7 +73,8 @@ const App = () => {
             return vector1 - vector2
         })
         const start = flatVertices[i]
-        const {trunkData, topData} = decoder("#6e3b1c&0.7&0.83&0.16|0|0|61.4,0|1.3|0|29.45,0.42|2.6|0|23.25,0.17|4|0|88.68^#91b341&4.2|3|2|x|y|z|0,4|2|2.8|x|y+2|z|5,4|2|2.8|x|y+4|z|0,4|2|2.8|x|y+6|z|0")
+        const {trunkData, topData, treeData} = decoder(generate())
+        console.log(generate())
         const {trunkMesh, trunkTop} = generateTrunk(scene, trunkData)
         const topMesh = generateTop(trunkTop, scene, topData)
         const group = new Group()
@@ -79,6 +82,7 @@ const App = () => {
         group.add(topMesh)
         group.position.set(start.x, start.y, start.z)
         group.scale.set(scale, scale, scale)
+        group.rotation.set(parseFloat(treeData.split("&")[0]) * 0.01745 , 0, parseFloat(treeData.split("&")[1]) * 0.01745)
         scene.add(group)
      }
 
@@ -86,7 +90,6 @@ const App = () => {
         for (let i = 0; i < 10; i++){
             growTree(i)
         }
-        // growTree(1)
         generateModel(scene, setScene, container, camera, setCamera)
     }, [])
 
@@ -102,7 +105,7 @@ const App = () => {
     return (
         <React.Fragment>
             {window.innerWidth <= 1000 && <BsArrowsMove style={style} className={"moveButton"}/>}
-            <div ref={container} style={window.innerWidth > 1000 ? {backgroundImage: "url('https://uploads-ssl.webflow.com/5d64ad209093d7b315c3591a/5e9697299bac7ccab1b35410_unity-game-asset-low-poly-modular-terrain-pack-very-large_2.jpg')"} : {}}/>
+            <div ref={container} className={"container"} style={window.innerWidth > 1000 ? {backgroundImage: "url('https://uploads-ssl.webflow.com/5d64ad209093d7b315c3591a/5e9697299bac7ccab1b35410_unity-game-asset-low-poly-modular-terrain-pack-very-large_2.jpg')"} : {}}/>
         </React.Fragment>
     )
 }

@@ -13,6 +13,12 @@
   top: 230px;
 }
 
+.container{
+  object-fit: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 body {
   overflow: hidden;
   box-sizing: border-box;
