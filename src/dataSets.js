@@ -34,10 +34,9 @@ export const trunkSegmentAmountData = [
 ]
 
 export const trunkHeightData = [
-	{value: 3.5, probability: 10},
-	{value: 3.8, probability: 100},
 	{value: 4, probability: 100},
-	{value: 5, probability: 1}
+	{value: 4.5, probability: 50},
+	{value: 5, probability: 50}
 ]
 
 export const topColorsData = [
@@ -52,11 +51,11 @@ export const topColorsData = [
 ]
 
 export const tipHeightData = [
-	{value: 2.5, probability: 10},
-	{value: 2.8, probability: 50},
 	{value: 3, probability: 100},
-	{value: 3.3, probability: 50},
-	{value: 3.5, probability: 10},
+	{value: 3.3, probability: 200},
+	{value: 3.5, probability: 100},
+	{value: 3.8, probability: 50},
+	{value: 4, probability: 10},
 ]
 
 export const tipOffsetData = [
@@ -102,11 +101,15 @@ export const topHeightData = [
 ]
 
 export const topRotationData = [
-	{value: -2, probability: 1},
-	{value: -1, probability: 5},
+	{value: -4, probability: 10},
+	{value: -3, probability: 20},
+	{value: -2, probability: 50},
+	{value: -1, probability: 100},
 	{value: 0, probability: 300},
-	{value: 1, probability: 5},
-	{value: 2, probability: 1},
+	{value: 1, probability: 100},
+	{value: 2, probability: 50},
+	{value: 3, probability: 20},
+	{value: 4, probability: 10},
 ]
 
 export const treeRotationData = [

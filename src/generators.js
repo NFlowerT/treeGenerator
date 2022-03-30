@@ -54,7 +54,7 @@ const topArrayGenerator = (segmentAmount) => {
 			"z", // z
 			rotationX // rotation x
 		]
-		y = (parseFloat(y) + (i === 0 ? 0 : (height - 0.3))).toFixed(2)
+		y = parseFloat(y) + height - 0.3
 		segmentArray.push(array.join("|"))
 	}
 	return segmentArray.join(",")
