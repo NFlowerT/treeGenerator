@@ -27,10 +27,10 @@ export const trunkShrinkData = [
 ]
 
 export const trunkSegmentAmountData = [
-	{value: 2, probability: 10},
-	{value: 3, probability: 100},
-	{value: 4, probability: 100},
-	{value: 5, probability: 1}
+	{value: 4, probability: 10},
+	{value: 5, probability: 100},
+	{value: 6, probability: 100},
+	{value: 7, probability: 10},
 ]
 
 export const trunkHeightData = [
@@ -112,8 +112,8 @@ export const topSegmentShrinkData = [
 
 export const topShrinkData = [
 	{value: 0.85, probability: 50},
-	// {value: 0.80, probability: 50},
-	// {value: 0.75, probability: 50},
+	{value: 0.80, probability: 50},
+	{value: 0.75, probability: 50},
 ]
 
 export const topHeightData = [

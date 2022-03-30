@@ -49,48 +49,8 @@ const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth, rotationY
     return edge
 }
 
-const decoder = (string, trunkTop) => {
-    let splitData = string.split("&")
-    return ({
-        color: splitData[0],
-        tipHeight: parseFloat(splitData[1]),
-        tipOffsetX: parseFloat(splitData[2]),
-        tipOffsetZ: parseFloat(splitData[3]),
-        data: convertStringToData(splitData[4], trunkTop),
-        segmentHeight: parseFloat(splitData[5]),
-        topOffsetX: parseFloat(splitData[6]),
-        topOffsetZ: parseFloat(splitData[7])
-    })
-}
-
-const convertStringToNumber = (s) => {
-    let total = 0
-    s = s.replace(/\s/g, '').match(/[+\-]?([0-9\.\s]+)/g) || []
-    while(s.length) total += parseFloat(s.shift())
-    return total
-}
-
-const convertStringToData = (string, trunkTop) => {
-    let data = []
-    let y = 0
-    string.split(",").forEach(item => {
-        item = item.replace("x", trunkTop.x)
-        item = item.replace("y", trunkTop.y)
-        item = item.replace("z", trunkTop.z)
-        let itemArray = item.split("|")
-        itemArray = itemArray.map(i => convertStringToNumber(i))
-        data.push({
-            bottomRadius: itemArray[0],
-            topRadius: itemArray[1],
-            height: itemArray[2],
-            rotationY: itemArray[3],
-        })
-    })
-    return data
-}
-
 export const generateTop = (trunkTop, scene, topData) => {
-    let {color, tipHeight, data, tipOffsetX, tipOffsetZ, segmentHeight, topOffsetX, topOffsetZ} = decoder(topData, trunkTop)
+    let {color, tipHeight, data, tipOffsetX, tipOffsetZ, segmentHeight, topOffsetX, topOffsetZ} = topData
     const material = new MeshPhysicalMaterial({color: parseInt(color.replace("#","0x"),16), flatShading: true})
     const group = new Group()
     const height = data.length * segmentHeight
@@ -115,7 +75,5 @@ export const generateTop = (trunkTop, scene, topData) => {
         previousPoint = point
     })
     group.translateY(-1)
-    scene.add(group)
-
     return group
 }

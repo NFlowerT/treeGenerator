@@ -4,33 +4,8 @@ import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry"
 import * as THREE from "three"
 import { makeNoise2D } from "open-simplex-noise"
 
-const decoder = (data) => {
-    const splitData = data.split("&")
-    return ({
-        color: splitData[0],
-        width: parseFloat(splitData[1]),
-        shrink: parseFloat(splitData[2]),
-        pointArray: stringToPointArray(splitData[3])
-    })
-}
-
-const stringToPointArray = (string) => {
-    let pointArray = []
-    string.split(",").forEach(item => {
-        let array = item.split("|")
-        array = array.map(i => parseFloat(i))
-        pointArray.push({
-            x: array[0],
-            y: array[1],
-            z: array[2],
-            seed: array[3],
-        })
-    })
-    return pointArray
-}
-
 export const generateTrunk = (scene, data) => {
-    let {color, width, shrink, pointArray} = decoder(data)
+    let {color, width, shrink, pointArray} = data
     let meshArray = []
     const group = new Group()
     const material = new MeshPhysicalMaterial({color: parseInt(color.replace("#","0x"),16), flatShading: true})
@@ -70,9 +45,6 @@ export const generateTrunk = (scene, data) => {
 
         group.add( mesh )
     }
-
-    scene.add(group)
-
     return {
         trunkMesh: group,
         trunkTop: pointArray[pointArray.length - 1]

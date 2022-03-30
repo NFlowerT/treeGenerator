@@ -12,6 +12,7 @@
     "alea": "^1.0.1",
     "drei": "^2.2.21",
     "electron": "^17.2.0",
+    "electron-as-wallpaper": "^0.0.1-dev",
     "jsm": "^0.0.1",
     "open-simplex-noise": "^2.5.0",
     "react": "^17.0.2",

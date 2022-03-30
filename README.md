@@ -31,16 +31,10 @@ Fazy wzrostu:
 - rosniecie calego drzewa (stage 3, trwa 80 dni, scale 0.2 - 1)
 
 
-##TODO: 
-Wyginanie drzewa:
-- generujemy krzywa
-- generujemy punkty
-- robimy stozki miedzy punktami
+##TODO:
 
 Wcięcia top segmentów:
 Rozsunąć wierzchołki dołu stożka.
-
-Dodac obrot po osi y na top segmenty
 
 ##Tapeta
 https://uploads-ssl.webflow.com/5d64ad209093d7b315c3591a/5e9697299bac7ccab1b35410_unity-game-asset-low-poly-modular-terrain-pack-very-large_2.jpg

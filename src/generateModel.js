@@ -7,7 +7,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
 
     //camera
     setCamera(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    camera.position.set( 20, 0, 20 )
+    camera.position.set( 30, 30, 30 )
 
     //light
     const light = new AmbientLight( 0x404040 )
@@ -43,7 +43,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
     const animate = () => {
         if (!stop){
             requestAnimationFrame(animate)
-            group.rotateY(0.004)
+            // group.rotateY(0.004)
             renderer.render( scene, camera )
         }
     }

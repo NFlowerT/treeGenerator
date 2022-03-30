@@ -57,3 +57,10 @@ export const getMatchingVertices = (vertices, index) => {
     })
     return indexArray
 }
+
+export const convertStringToNumber = (s) => {
+    let total = 0
+    s = s.replace(/\s/g, '').match(/[+\-]?([0-9\.\s]+)/g) || []
+    while(s.length) total += parseFloat(s.shift())
+    return total
+}
