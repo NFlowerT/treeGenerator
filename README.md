@@ -17,10 +17,12 @@
 3 &  ->  wysokosc czubka
 0.3 &  ->  offsetX czubka
 0.3 &  ->  offsetZ czubka
-	4.2|2.8|2|x|y|z|0,  ->  segment 1 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi Y)
-	4|2|2.8|x|y+2|z|5,  ->  segment 2 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi Y)
-	3.8|2|2.8|x|y+4|z|0,  ->  segment 3 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi Y)
-	3.6|2|2.8|x|y+6|z|0  ->  segment 4 góry (średnica dołu, średnica góry, wysokość, x, y, z, obrót osi Y)
+	4.2|2.8|0,  ->  segment 1 góry (średnica dołu, średnica góry, wysokość, obrót osi Y)
+	4|2|2.8|5,  ->  segment 2 góry (średnica dołu, średnica góry, wysokość, obrót osi Y)
+	3.8|2|0,  ->  segment 3 góry (średnica dołu, średnica góry, wysokość, obrót osi Y)
+	3.6|2|0  ->  segment 4 góry (średnica dołu, średnica góry, wysokość, obrót osi Y)
+	
+	
 ```
 
 Fazy wzrostu:

@@ -1,5 +1,10 @@
 import {DodecahedronGeometry, Mesh, MeshPhysicalMaterial} from "three"
-import {convertVectorsToVertices, convertVerticesToVectors, getMatchingVertices} from "./globalFunctions"
+import {
+    convertVectorsToVertices,
+    convertVerticesToVectors,
+    getMatchingVertices,
+    updateVertices
+} from "./globalFunctions"
 import {makeNoise2D} from "open-simplex-noise"
 import * as THREE from "three"
 
@@ -19,8 +24,7 @@ export const createIsland = (scene, radius) => {
         }
     })
     mesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(convertVectorsToVertices(vertices), 3))
-    scene.add(mesh)
     mesh.translateY(1)
     flatVertices = flatVertices.map(i => vertices[i])
-    return flatVertices
+    return {islandMesh: mesh, islandPoints: flatVertices}
 }

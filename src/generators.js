@@ -1,7 +1,17 @@
 import {getRandomFloat, getRandomInt} from "./globalFunctions"
 import {
-	tipHeightData, tipOffsetData, topAmountData, topBottomWidthData,
-	topColorsData, topHeightData, topRotationData, topSegmentShrinkData, topShrinkData, treeRotationData,
+	tipHeightData,
+	tipOffsetData,
+	topAmountData,
+	topBottomWidthData,
+	topColorsData,
+	topHeightData,
+	topOffset,
+	topOffsetData,
+	topRotationData,
+	topSegmentShrinkData,
+	topShrinkData,
+	treeRotationData,
 	trunkColorsData,
 	trunkHeightData,
 	trunkSegmentAmountData,
@@ -40,21 +50,16 @@ const trunkArrayGenerator = (segmentAmount, endPoint) => {
 
 const topArrayGenerator = (segmentAmount, topSegmentShrink, topShrink) => {
 	let segmentArray = []
-	let y = 0
 	let bottomRadius = generateItemFromDataset(topBottomWidthData)
 	for (let i = 0; i <= segmentAmount; i++){
-		let height = generateItemFromDataset(topHeightData)
+		let tipHeight = generateItemFromDataset(tipHeightData)
 		let rotationY = generateItemFromDataset(topRotationData)
 		let array = [
-			bottomRadius, // bottom radius
-			(bottomRadius * topSegmentShrink).toFixed(2), // top radius
-			height, // height
-			"x", // x
-			"y+" + y.valueOf().toString(), // y
-			"z", // z
-			rotationY // rotation y
+			bottomRadius,
+			(bottomRadius * topSegmentShrink).toFixed(2),
+			tipHeight,
+			rotationY,
 		]
-		y = parseFloat(y) + height - 0.3
 		segmentArray.push(array.join("|"))
 		bottomRadius *= topShrink
 	}
@@ -81,10 +86,14 @@ export const generate = () => {
 		generateItemFromDataset(topSegmentShrinkData),
 		generateItemFromDataset(topShrinkData)
 	)
+	const segmentHeight = generateItemFromDataset(topHeightData)
+	const topOffsetX = generateItemFromDataset(topOffsetData)
+	const topOffsetZ = generateItemFromDataset(topOffsetData)
+
 
 	// assembly
 	const trunk = [trunkColor, trunkWidth, trunkShrink, trunkArray].join("&")
-	const top = [topColor, tipHeight, tipOffsetX, tipOffsetY, topArray].join("&")
+	const top = [topColor, tipHeight, tipOffsetX, tipOffsetY, topArray, segmentHeight, topOffsetX, topOffsetZ].join("&")
 	return [trunk, top].join("^")
 }
 

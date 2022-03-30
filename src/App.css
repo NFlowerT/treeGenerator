@@ -13,6 +13,19 @@
   top: 230px;
 }
 
+button{
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background: gray;
+  border: none;
+  border-radius: 10px;
+  width: 100px;
+  height: 40px;
+}
+
 .container{
   object-fit: cover;
   background-repeat: no-repeat;

@@ -65,13 +65,30 @@ export const tipOffsetData = [
 	{value: 0.3, probability: 5},
 ]
 
+export const topOffsetData = [
+	{value: -1.8, probability: 1},
+	{value: -1.5, probability: 10},
+	{value: -1.3, probability: 10},
+	{value: -1, probability: 50},
+	{value: -0.8, probability: 50},
+	{value: -0.5, probability: 50},
+	{value: -0.3, probability: 50},
+	{value: 0, probability: 100},
+	{value: 0.3, probability: 50},
+	{value: 0.5, probability: 50},
+	{value: 0.8, probability: 50},
+	{value: 1, probability: 50},
+	{value: 1.3, probability: 10},
+	{value: 1.5, probability: 10},
+	{value: 1.8, probability: 1},
+]
+
 export const topAmountData = [
-	{value: 1, probability: 1},
-	{value: 2, probability: 50},
 	{value: 3, probability: 200},
 	{value: 4, probability: 200},
 	{value: 5, probability: 50},
-	{value: 6, probability: 1},
+	{value: 6, probability: 10},
+	{value: 7, probability: 2},
 ]
 
 export const topBottomWidthData = [

@@ -2,12 +2,12 @@ import {AmbientLight, DirectionalLight, PerspectiveCamera, Scene, WebGL1Renderer
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import * as THREE from "three";
 
-export const generateModel = (scene, setScene, container, camera, setCamera) => {
+export const generateModel = (scene, setScene, container, camera, setCamera, group) => {
     setScene(new Scene())
 
     //camera
     setCamera(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    camera.position.set( 80, 80, 80 )
+    camera.position.set( 20, 0, 20 )
 
     //light
     const light = new AmbientLight( 0x404040 )
@@ -26,6 +26,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     container.current.appendChild( renderer.domElement )
 
     //controls
+    let stop = false;
     const controls = new OrbitControls( camera, renderer.domElement)
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
@@ -34,8 +35,20 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     controls.minDistance = 25
     controls.maxDistance = 200
     controls.update()
-    controls.addEventListener( 'change', () => {renderer.render(scene, camera)} )
+    controls.addEventListener( 'change', () => {
+        stop = true
+        renderer.render(scene, camera)
+    })
 
-    //render
-    renderer.render( scene, camera )
+    const animate = () => {
+        if (!stop){
+            requestAnimationFrame(animate)
+            group.rotateY(0.004)
+            renderer.render( scene, camera )
+        }
+    }
+    animate()
+    let image = renderer.domElement.toDataURL()
+
+    return {image: image}
 }

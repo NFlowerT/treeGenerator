@@ -39,7 +39,7 @@ const App = () => {
     const [scene, setScene] = useState(new Scene())
     const [camera, setCamera] = useState(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
     const [scale, setScale] = useState(1)
-    const [treArray, setTreeArray] = useState([])
+    const [render, setRender] = useState("")
     const container = useRef(null)
 
     const growTree = (i, islandPoints, dna) => {
@@ -64,23 +64,18 @@ const App = () => {
      }
 
     useEffect(() => {
-        let islandPoints = createIsland(scene, 7)
-        // // for (let i = 0; i < 20; i++) {
-        let tree = growTree(1, islandPoints, generate())
-        // // }
-        scene.add(tree)
-
-        const curve = new THREE.QuadraticBezierCurve3(
-            new THREE.Vector3( 5, 0, 0 ),
-            new THREE.Vector3( 5, 8, 0 ),
-            new THREE.Vector3( 7, 15, 0 ),
-        );
-        const points = curve.getPoints(50);
-        const geometry = new THREE.BufferGeometry().setFromPoints( points );
-        const material = new THREE.LineBasicMaterial( { color: 0xff0000 } );
-        const splineObject = new THREE.Line( geometry, material );
-        scene.add(splineObject)
-        generateModel(scene, setScene, container, camera, setCamera)
+        let {islandPoints, islandMesh} = createIsland(scene, 7)
+        const group = new Group()
+        group.add(islandMesh)
+        islandMesh.translateY(-4)
+        for (let i = 0; i < 1; i++) {
+            let tree = growTree(i, islandPoints, generate())
+            tree.translateY(-4)
+            group.add(tree)
+        }
+        scene.add(group)
+        const {image} = generateModel(scene, setScene, container, camera, setCamera, group)
+        console.log(image)
     }, [])
 
     return (
