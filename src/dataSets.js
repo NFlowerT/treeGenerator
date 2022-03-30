@@ -70,8 +70,8 @@ export const topAmountData = [
 	{value: 2, probability: 50},
 	{value: 3, probability: 200},
 	{value: 4, probability: 200},
-	{value: 5, probability: 100},
-	{value: 6, probability: 10},
+	{value: 5, probability: 50},
+	{value: 6, probability: 1},
 ]
 
 export const topBottomWidthData = [
@@ -85,11 +85,18 @@ export const topBottomWidthData = [
 	{value: 4.35, probability: 1},
 ]
 
-export const topShrinkData = () => [
-	{value: 0.15, probability: 10},
-	{value: 0.2, probability: 100},
-	{value: 0.25, probability: 100},
-	{value: 0.3, probability: 10},
+export const topSegmentShrinkData = [
+	{value: 0.5, probability: 10},
+	{value: 0.55, probability: 50},
+	{value: 0.60, probability: 100},
+	{value: 0.65, probability: 50},
+	{value: 0.7, probability: 10},
+]
+
+export const topShrinkData = [
+	{value: 0.85, probability: 50},
+	// {value: 0.80, probability: 50},
+	// {value: 0.75, probability: 50},
 ]
 
 export const topHeightData = [
@@ -101,15 +108,13 @@ export const topHeightData = [
 ]
 
 export const topRotationData = [
-	{value: -4, probability: 10},
-	{value: -3, probability: 20},
-	{value: -2, probability: 50},
-	{value: -1, probability: 100},
-	{value: 0, probability: 300},
-	{value: 1, probability: 100},
-	{value: 2, probability: 50},
-	{value: 3, probability: 20},
-	{value: 4, probability: 10},
+	{value: -30, probability: 100},
+	{value: -20, probability: 100},
+	{value: -10, probability: 100},
+	{value: 0, probability: 100},
+	{value: 10, probability: 100},
+	{value: 20, probability: 100},
+	{value: 30, probability: 100},
 ]
 
 export const treeRotationData = [

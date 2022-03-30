@@ -12,7 +12,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     //light
     const light = new AmbientLight( 0x404040 )
     scene.add( light )
-    const directionalLight1 = new DirectionalLight( 0xffffff, 1.1 )
+    const directionalLight1 = new DirectionalLight( 0xffffff, 0.9 )
     directionalLight1.position.set(-5, 2, 8)
     scene.add( directionalLight1 )
     const directionalLight2 = new DirectionalLight( 0xffffff, 0.5 )
@@ -26,15 +26,16 @@ export const generateModel = (scene, setScene, container, camera, setCamera) => 
     container.current.appendChild( renderer.domElement )
 
     //controls
-    const controls = new OrbitControls( camera, renderer.domElement )
+    const controls = new OrbitControls( camera, renderer.domElement)
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
     }
+    controls.minDistance = 25
+    controls.maxDistance = 200
     controls.update()
     controls.addEventListener( 'change', () => {renderer.render(scene, camera)} )
 
     //render
-
     renderer.render( scene, camera )
 }

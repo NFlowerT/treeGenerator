@@ -1,10 +1,39 @@
 import {
     CylinderGeometry,
     Mesh,
-    Group, MeshPhysicalMaterial
+    Group, MeshPhysicalMaterial, Vector3, MeshBasicMaterial, Matrix4, Object3D
 } from "three"
 import {convertVerticesToVectors, getMatchingVertices, convertVectorsToVertices,updateVertices} from "./globalFunctions"
 import * as THREE from "three"
+
+// let previousPoint = null
+// points.forEach(point => {
+//     if (previousPoint) {
+//         const mesh = cylinderMesh(new Vector3(previousPoint.x, previousPoint.y - 0.3, previousPoint.z), point, new MeshBasicMaterial({color: "#911c1c"}), 5,2)
+//         scene.add(mesh)
+//     }
+//     previousPoint = point
+// })
+
+const cylinderMesh = (pointX, pointY, material, bottomWidth, topWidth) => {
+    const direction = new Vector3().subVectors(pointY, pointX)
+    const orientation = new Matrix4()
+    orientation.lookAt(pointX, pointY, new Object3D().up)
+    orientation.multiply(new Matrix4().set(1, 0, 0, 0,
+        0, 0, 1, 0,
+        0, -1, 0, 0,
+        0, 0, 0, 1))
+    const edgeGeometry = new CylinderGeometry(topWidth, bottomWidth, direction.length(), 12, 1, false)
+    const edge = new THREE.Mesh(edgeGeometry, material)
+    edge.applyMatrix4(orientation)
+    edge.position.x = (pointY.x + pointX.x) / 2
+    edge.position.y = (pointY.y + pointX.y) / 2
+    edge.position.z = (pointY.z + pointX.z) / 2
+
+    updateVertices(edge)
+
+    return edge
+}
 
 const decoder = (string, trunkTop) => {
     let splitData = string.split("&")
@@ -40,7 +69,7 @@ const convertStringToData = (string, trunkTop) => {
             x: itemArray[3],
             y: itemArray[4],
             z: itemArray[5],
-            rotationX: itemArray[6],
+            rotationY: itemArray[6],
         })
     })
     return data
@@ -48,7 +77,6 @@ const convertStringToData = (string, trunkTop) => {
 
 export const generateTop = (trunkTop, scene, topData) => {
     let {color, tipHeight, data, tipOffsetX, tipOffsetZ} = decoder(topData, trunkTop)
-
     const material = new MeshPhysicalMaterial({color: parseInt(color.replace("#","0x"),16), flatShading: true})
     const group = new Group()
     data.forEach((item, i) => {
@@ -57,10 +85,9 @@ export const generateTop = (trunkTop, scene, topData) => {
         topMesh.position.set(item.x, item.y, item.z)
         updateVertices(topMesh)
         modifyVertices(topMesh, scene, i === (data.length - 1), tipHeight, tipOffsetX, tipOffsetZ)
-        topMesh.rotation.set(item.rotationX * 0.0174532925, 0, 0)
+        topMesh.rotation.set(0, item.rotationY * 0.0174532925, 0)
         topMesh.geometry.attributes.position.needsUpdate = true
-
-        group.add(topMesh)
+        group.add( topMesh );
     })
     scene.add(group)
 
@@ -93,6 +120,3 @@ export const modifyVertices = (topMesh, scene, lastVerticle, tipHeight, tipOffse
 
     return vertices
 }
-
-
-

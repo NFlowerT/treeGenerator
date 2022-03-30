@@ -1,7 +1,7 @@
 import {getRandomFloat, getRandomInt} from "./globalFunctions"
 import {
-	tipHeightData, tipOffsetData, topBottomWidthData,
-	topColorsData, topHeightData, topRotationData, treeRotationData,
+	tipHeightData, tipOffsetData, topAmountData, topBottomWidthData,
+	topColorsData, topHeightData, topRotationData, topSegmentShrinkData, topShrinkData, treeRotationData,
 	trunkColorsData,
 	trunkHeightData,
 	trunkSegmentAmountData,
@@ -38,24 +38,25 @@ const trunkArrayGenerator = (segmentAmount, endPoint) => {
 	return pointArray.join(",")
 }
 
-const topArrayGenerator = (segmentAmount) => {
+const topArrayGenerator = (segmentAmount, topSegmentShrink, topShrink) => {
 	let segmentArray = []
 	let y = 0
+	let bottomRadius = generateItemFromDataset(topBottomWidthData)
 	for (let i = 0; i <= segmentAmount; i++){
-		let bottomRadius = generateItemFromDataset(topBottomWidthData)
 		let height = generateItemFromDataset(topHeightData)
-		let rotationX = generateItemFromDataset(topRotationData)
+		let rotationY = generateItemFromDataset(topRotationData)
 		let array = [
 			bottomRadius, // bottom radius
-			(bottomRadius * 0.6666).toFixed(2), // top radius
+			(bottomRadius * topSegmentShrink).toFixed(2), // top radius
 			height, // height
 			"x", // x
 			"y+" + y.valueOf().toString(), // y
 			"z", // z
-			rotationX // rotation x
+			rotationY // rotation y
 		]
 		y = parseFloat(y) + height - 0.3
 		segmentArray.push(array.join("|"))
+		bottomRadius *= topShrink
 	}
 	return segmentArray.join(",")
 }
@@ -76,18 +77,15 @@ export const generate = () => {
 	const tipOffsetX = generateItemFromDataset(tipOffsetData)
 	const tipOffsetY = generateItemFromDataset(tipOffsetData)
 	const topArray = topArrayGenerator(
-		generateItemFromDataset(trunkSegmentAmountData)
+		generateItemFromDataset(topAmountData),
+		generateItemFromDataset(topSegmentShrinkData),
+		generateItemFromDataset(topShrinkData)
 	)
-
-	// whole rotation
-	const rotationX = generateItemFromDataset(treeRotationData)
-	const rotationZ = generateItemFromDataset(treeRotationData)
 
 	// assembly
 	const trunk = [trunkColor, trunkWidth, trunkShrink, trunkArray].join("&")
 	const top = [topColor, tipHeight, tipOffsetX, tipOffsetY, topArray].join("&")
-	const rotations = [rotationX, rotationZ].join("&")
-	return [trunk, top, rotations].join("^")
+	return [trunk, top].join("^")
 }
 
 
