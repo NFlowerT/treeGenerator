@@ -1,21 +1,21 @@
-import {AmbientLight, DirectionalLight, PerspectiveCamera, Scene, WebGL1Renderer} from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import * as THREE from "three";
+import {AmbientLight, DirectionalLight, PerspectiveCamera, Scene, WebGL1Renderer} from "three"
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
+import * as THREE from "three"
 
 export const generateModel = (scene, setScene, container, camera, setCamera, group) => {
     setScene(new Scene())
 
     //camera
     setCamera(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    camera.position.set( 30, 30, 30 )
+    camera.position.set( 15, 10, 15 )
 
     //light
     const light = new AmbientLight( 0x404040 )
     scene.add( light )
-    const directionalLight1 = new DirectionalLight( 0xffffff, 0.9 )
+    const directionalLight1 = new DirectionalLight( "#ffffff", 0.9 )
     directionalLight1.position.set(-5, 2, 8)
     scene.add( directionalLight1 )
-    const directionalLight2 = new DirectionalLight( 0xffffff, 0.5 )
+    const directionalLight2 = new DirectionalLight( "#538628", 0.5 )
     directionalLight2.position.set(10, 2, -8)
     scene.add( directionalLight2 )
 
@@ -31,9 +31,10 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
     controls.mouseButtons = {
         LEFT: THREE.MOUSE.ROTATE,
         MIDDLE: THREE.MOUSE.DOLLY,
+        RIGHT: THREE.MOUSE.PAN
     }
-    controls.minDistance = 25
-    controls.maxDistance = 200
+    // controls.minDistance = 25
+    // controls.maxDistance = 200
     controls.update()
     controls.addEventListener( 'change', () => {
         stop = true

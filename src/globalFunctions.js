@@ -1,7 +1,4 @@
-import {cylinderFaceAmount} from "./App";
 import {Vector3} from "three";
-import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry";
-import * as THREE from "three";
 
 export const getRandomFloat = (min, max) => {
     return Math.random() * (max - min) + min
@@ -22,10 +19,10 @@ export const updateVertices = (mesh) => {
     mesh.updateMatrix()
 }
 
-export const getVertices = (cylinder) => {
+export const getVertices = (mesh) => {
     let verticesArray = []
-    let vertices = cylinder.geometry.attributes.position.array
-    for (let i = 0; i < (cylinderFaceAmount * 3); i += 3){
+    let vertices = mesh.geometry.attributes.position.array
+    for (let i = 0; i < (vertices.length - 1); i += 3){
         verticesArray.push(new Vector3(vertices[i], vertices[i + 1], vertices[i + 2]))
     }
     return verticesArray

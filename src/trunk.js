@@ -1,7 +1,6 @@
-import {CylinderGeometry, Mesh, Vector3, Group, MeshPhysicalMaterial} from "three"
-import {getRandomFloat, getRandomInt, getVertices, updateVertices} from "./globalFunctions"
+import {CylinderGeometry, Mesh, Vector3, Group, MeshPhysicalMaterial, Float32BufferAttribute} from "three"
+import {getVertices, updateVertices} from "./globalFunctions"
 import {ConvexGeometry} from "three/examples/jsm/geometries/ConvexGeometry"
-import * as THREE from "three"
 import { makeNoise2D } from "open-simplex-noise"
 
 export const generateTrunk = (scene, data) => {
@@ -25,7 +24,7 @@ export const generateTrunk = (scene, data) => {
             newVertices[i + 1] = p.y
             newVertices[i + 2] = p.z
         }
-        mesh.geometry.setAttribute('position', new THREE.Float32BufferAttribute(newVertices, 3))
+        mesh.geometry.setAttribute('position', new Float32BufferAttribute(newVertices, 3))
 
         updateVertices(mesh)
 
@@ -41,7 +40,7 @@ export const generateTrunk = (scene, data) => {
             vertices = vertices.concat(getVertices(mesh))
         })
         const geometry = new ConvexGeometry( vertices )
-        const mesh = new THREE.Mesh( geometry, material )
+        const mesh = new Mesh( geometry, material )
 
         group.add( mesh )
     }
