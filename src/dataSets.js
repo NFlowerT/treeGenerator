@@ -73,7 +73,7 @@ export const topOffsetData = [
 	{value: -0.8, probability: 50},
 	{value: -0.5, probability: 50},
 	{value: -0.3, probability: 50},
-	{value: 0, probability: 100},
+	{value: 0, probability: 1000},
 	{value: 0.3, probability: 50},
 	{value: 0.5, probability: 50},
 	{value: 0.8, probability: 50},

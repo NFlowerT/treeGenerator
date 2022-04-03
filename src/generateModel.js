@@ -43,7 +43,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
     const animate = () => {
         if (!stop){
             requestAnimationFrame(animate)
-            // group.rotateY(0.004)
+            group.rotateY(0.004)
             renderer.render( scene, camera )
         }
     }
