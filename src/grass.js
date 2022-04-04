@@ -2,8 +2,8 @@ import {ConeGeometry, Mesh, MeshPhysicalMaterial, Float32BufferAttribute} from "
 import {convertVectorsToVertices, convertVerticesToVectors, getRandomFloat} from "./globalFunctions"
 
 export const grass = () => {
-	const geometry = new ConeGeometry( 0.1, 2, 3, 4)
-	const material = new MeshPhysicalMaterial({color: "#5c7a3a", flatShading: false})
+	const geometry = new ConeGeometry( 0.05, 0.5, 3, 4)
+	const material = new MeshPhysicalMaterial({color: "#5c7a3a", flatShading: true})
 	const mesh = new Mesh( geometry, material )
 
 	let vertices = convertVerticesToVectors(mesh.geometry.attributes.position.array)
@@ -17,8 +17,8 @@ export const grass = () => {
 
 	heights.forEach(y => {
 		let matchingHeight = vertices.filter(verticle => verticle.y === y)
-		let x = getRandomFloat(0, 0.2)
-		let z = getRandomFloat(0, 0.2)
+		let x = getRandomFloat(0, 0.1)
+		let z = getRandomFloat(0, 0.1)
 		matchingHeight.forEach(verticle => {
 			vertices[vertices.indexOf(verticle)].x += x
 			vertices[vertices.indexOf(verticle)].z += z

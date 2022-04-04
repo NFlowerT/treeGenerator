@@ -1,6 +1,6 @@
 import './App.css'
 import * as React from 'react'
-import {PerspectiveCamera, Scene, Group, Vector3} from 'three'
+import {PerspectiveCamera, Scene, Group, Vector3, Color, BufferAttribute} from 'three'
 import {useEffect, useRef, useState} from "react"
 import {generateTop} from "./treeTops"
 import {generateTrunk} from "./trunk"
@@ -12,8 +12,7 @@ import {getRandomFloat, getRandomInt} from "./globalFunctions"
 import {decoder} from "./decoder"
 import {rock} from "./rock"
 import {grass} from "./grass"
-import {MeshSurfaceSampler} from "./MeshSurfaceSampler"
-
+import {MeshSurfaceSampler} from "three/examples/jsm/math/MeshSurfaceSampler";
 const App = () => {
     const [scene, setScene] = useState(new Scene())
     const [camera, setCamera] = useState(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
@@ -36,6 +35,7 @@ const App = () => {
         const group = new Group()
         group.add(islandMesh)
         islandMesh.translateY(-4)
+
 
         const sampler = new MeshSurfaceSampler(islandMesh).build()
         const tempPosition = new Vector3()

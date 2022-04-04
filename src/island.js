@@ -1,9 +1,17 @@
-import {DodecahedronGeometry, Mesh, MeshPhysicalMaterial, Float32BufferAttribute} from "three"
-import {convertVectorsToVertices, convertVerticesToVectors, getMatchingVertices} from "./globalFunctions"
+import {
+    DodecahedronGeometry,
+    Mesh,
+    MeshPhysicalMaterial,
+    Float32BufferAttribute,
+    BufferAttribute,
+    Color,
+    Vector3
+} from "three"
+import {convertVectorsToVertices, convertVerticesToVectors, getMatchingVertices, getRandomInt} from "./globalFunctions"
 import {makeNoise2D} from "open-simplex-noise"
 
 export const createIsland = (scene, radius) => {
-    const mesh = new Mesh(new DodecahedronGeometry(radius, 2), new MeshPhysicalMaterial({color: "#e1a989", flatShading: true}));
+    const mesh = new Mesh(new DodecahedronGeometry(radius, 2), new MeshPhysicalMaterial({vertexColors: true, flatShading: true}));
     let vertices = convertVerticesToVectors(mesh.geometry.attributes.position.array)
     let flatVertices = []
     vertices.forEach((verticle, i) => {
@@ -18,6 +26,17 @@ export const createIsland = (scene, radius) => {
         }
     })
     mesh.geometry.setAttribute('position', new Float32BufferAttribute(convertVectorsToVertices(vertices), 3))
+
+    const colors = [];
+    const color = new Color();
+    vertices.forEach(verticle => {
+        color.set( ["#c9c9c9", "#91bd60"][Math.random() > 0.7 ? 0 : 1] );
+
+        colors.push( color.r, color.g, color.b );
+        colors.push( color.r, color.g, color.b );
+        colors.push( color.r, color.g, color.b );
+    })
+    mesh.geometry.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) );
     mesh.translateY(1)
     return mesh
 }
