@@ -1,6 +1,5 @@
-import {AmbientLight, DirectionalLight, PerspectiveCamera, Scene, WebGL1Renderer} from "three"
+import {AmbientLight, DirectionalLight, MOUSE, PerspectiveCamera, Scene, WebGL1Renderer} from "three"
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
-import * as THREE from "three"
 
 export const generateModel = (scene, setScene, container, camera, setCamera, group) => {
     setScene(new Scene())
@@ -29,9 +28,9 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
     let stop = false;
     const controls = new OrbitControls( camera, renderer.domElement)
     controls.mouseButtons = {
-        LEFT: THREE.MOUSE.ROTATE,
-        MIDDLE: THREE.MOUSE.DOLLY,
-        RIGHT: THREE.MOUSE.PAN
+        LEFT: MOUSE.ROTATE,
+        MIDDLE: MOUSE.DOLLY,
+        RIGHT: MOUSE.PAN
     }
     // controls.minDistance = 25
     // controls.maxDistance = 200

@@ -28,8 +28,8 @@ button{
 
 .container{
   object-fit: cover;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-repeat: no-repeat!important;
+  background-size: cover!important;
 }
 
 body {
@@ -44,4 +44,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+img{
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  z-index: -1000;
 }

@@ -88,7 +88,7 @@ const App = () => {
             grassModels.push(grass())
         }
         let grassCounter = 0
-        while (grassCounter <= 5000){
+        while (grassCounter <= 10){
             sampler.sample(tempPosition)
             let mesh = grassModels[getRandomInt(0, 9)].clone()
             if (tempPosition.y > -3 && new Vector3(0,1,0).distanceTo(tempPosition) < 9.4){
