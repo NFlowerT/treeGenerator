@@ -83,27 +83,27 @@ const App = () => {
             }
         }
 
-        const grassModels = []
-        for (let i = 0; i < 10; i++){
-            grassModels.push(grass())
-        }
-        let grassCounter = 0
-        while (grassCounter <= 10){
-            sampler.sample(tempPosition)
-            let mesh = grassModels[getRandomInt(0, 9)].clone()
-            if (tempPosition.y > -3 && new Vector3(0,1,0).distanceTo(tempPosition) < 9.4){
-                mesh.position.set(tempPosition.x, tempPosition.y - 3, tempPosition.z);
-                let check = true
-                meshPositions.forEach(item => {
-                    if (item.position.distanceTo(mesh.position) < 0.8)
-                        check = false
-                })
-                if (check){
-                    group.add(mesh)
-                    grassCounter++
-                }
-            }
-        }
+        // const grassModels = []
+        // for (let i = 0; i < 10; i++){
+        //     grassModels.push(grass())
+        // }
+        // let grassCounter = 0
+        // while (grassCounter <= 10){
+        //     sampler.sample(tempPosition)
+        //     let mesh = grassModels[getRandomInt(0, 9)].clone()
+        //     if (tempPosition.y > -3 && new Vector3(0,1,0).distanceTo(tempPosition) < 9.4){
+        //         mesh.position.set(tempPosition.x, tempPosition.y - 3, tempPosition.z);
+        //         let check = true
+        //         meshPositions.forEach(item => {
+        //             if (item.position.distanceTo(mesh.position) < 0.8)
+        //                 check = false
+        //         })
+        //         if (check){
+        //             group.add(mesh)
+        //             grassCounter++
+        //         }
+        //     }
+        // }
         scene.add(group)
         generateModel(scene, setScene, container, camera, setCamera, group)
     }, [])

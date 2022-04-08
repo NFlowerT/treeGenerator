@@ -25,16 +25,15 @@ export const createIsland = (scene, radius) => {
     })
     mesh.geometry.setAttribute('position', new Float32BufferAttribute(convertVectorsToVertices(vertices), 3))
 
-    const colors = [];
-    const color = new Color();
+    const colors = []
+    const color = new Color()
     vertices.forEach(() => {
-        color.set( ["#727272", "#557312"][Math.random() > 0.7 ? 0 : 1] );
-
-        colors.push( color.r, color.g, color.b );
-        colors.push( color.r, color.g, color.b );
-        colors.push( color.r, color.g, color.b );
+        color.set( ["#727272", "#557312"][Math.random() > 0.7 ? 0 : 1] )
+        colors.push( color.r, color.g, color.b )
+        colors.push( color.r, color.g, color.b )
+        colors.push( color.r, color.g, color.b )
     })
-    mesh.geometry.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) );
+    mesh.geometry.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) )
     mesh.translateY(1)
     return mesh
 }

@@ -6,7 +6,7 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
 
     //camera
     setCamera(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    camera.position.set( 15, 5, 15 )
+    camera.position.set( 20, 5, 20 )
 
     //light
     const light = new AmbientLight( 0x404040 )
