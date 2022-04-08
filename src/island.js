@@ -11,7 +11,7 @@ import {convertVectorsToVertices, convertVerticesToVectors, getMatchingVertices,
 import {makeNoise2D} from "open-simplex-noise"
 
 export const createIsland = (scene, radius) => {
-    const mesh = new Mesh(new DodecahedronGeometry(radius, 2), new MeshPhysicalMaterial({vertexColors: true, flatShading: true}));
+    const mesh = new Mesh(new DodecahedronGeometry(radius, 10), new MeshPhysicalMaterial({vertexColors: true, flatShading: true}));
     let vertices = convertVerticesToVectors(mesh.geometry.attributes.position.array)
     let flatVertices = []
     vertices.forEach((verticle, i) => {
@@ -30,7 +30,7 @@ export const createIsland = (scene, radius) => {
     const colors = [];
     const color = new Color();
     vertices.forEach(verticle => {
-        color.set( ["#c9c9c9", "#91bd60"][Math.random() > 0.7 ? 0 : 1] );
+        color.set( ["#727272", "#557312"][Math.random() > 0.7 ? 0 : 1] );
 
         colors.push( color.r, color.g, color.b );
         colors.push( color.r, color.g, color.b );

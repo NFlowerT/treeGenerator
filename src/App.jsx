@@ -111,7 +111,7 @@ const App = () => {
     return (
         <React.Fragment>
             {window.innerWidth <= 1000 && <BsArrowsMove className={"moveButton"}/>}
-            <div ref={container} className={"container"} style={window.innerWidth > 1000 ? {backgroundImage: "url('http://i.imgur.com/HAhyJxB.png?1')"} : {}}/>
+            <div ref={container} className={"container"}/>
         </React.Fragment>
     )
 }

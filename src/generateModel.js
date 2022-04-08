@@ -6,18 +6,23 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
 
     //camera
     setCamera(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    camera.position.set( 15, 10, 15 )
+    camera.position.set( 15, 5, 15 )
 
     //light
     const light = new AmbientLight( 0x404040 )
     scene.add( light )
-    const directionalLight1 = new DirectionalLight( "#ffffff", 0.9 )
-    directionalLight1.position.set(-5, 2, 8)
-    scene.add( directionalLight1 )
-    const directionalLight2 = new DirectionalLight( "#538628", 0.5 )
-    directionalLight2.position.set(10, 2, -8)
-    scene.add( directionalLight2 )
-
+    const lights = [
+        {intensity: 1.1, x: 10000, y: 10000, z: 10000},
+        {intensity: 0.1, x: 0, y: 10, z: 10},
+        {intensity: 0.1, x: 10, y: 10, z: -10},
+        {intensity: 0.1, x: -10, y: 10, z: -10},
+        {intensity: 0.4, x: 0, y: -20, z: 0},
+    ]
+    lights.forEach(({intensity, x, y, z}) => {
+        const directionalLight = new DirectionalLight( "#ffffff", intensity )
+        directionalLight.position.set(x, y, z)
+        scene.add( directionalLight )
+    })
     //renderer
     const renderer = new WebGL1Renderer({alpha: true})
     renderer.setSize( window.innerWidth, window.innerHeight )
@@ -49,6 +54,6 @@ export const generateModel = (scene, setScene, container, camera, setCamera, gro
     }
     animate()
     let image = renderer.domElement.toDataURL()
-
+    console.log(image)
     return {image: image}
 }
