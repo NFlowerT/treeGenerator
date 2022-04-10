@@ -1,20 +1,20 @@
 {
   "files": {
-    "main.css": "/treeGenerator/static/css/main.421c7be3.chunk.css",
-    "main.js": "/treeGenerator/static/js/main.276ff62a.chunk.js",
-    "main.js.map": "/treeGenerator/static/js/main.276ff62a.chunk.js.map",
-    "runtime-main.js": "/treeGenerator/static/js/runtime-main.5f262346.js",
-    "runtime-main.js.map": "/treeGenerator/static/js/runtime-main.5f262346.js.map",
-    "static/js/2.855e6a17.chunk.js": "/treeGenerator/static/js/2.855e6a17.chunk.js",
-    "static/js/2.855e6a17.chunk.js.map": "/treeGenerator/static/js/2.855e6a17.chunk.js.map",
+    "main.css": "/treeGenerator/static/css/main.94b90167.chunk.css",
+    "main.js": "/treeGenerator/static/js/main.3ae6f516.chunk.js",
+    "main.js.map": "/treeGenerator/static/js/main.3ae6f516.chunk.js.map",
+    "runtime-main.js": "/treeGenerator/static/js/runtime-main.348a1c46.js",
+    "runtime-main.js.map": "/treeGenerator/static/js/runtime-main.348a1c46.js.map",
+    "static/js/2.4b7f86b1.chunk.js": "/treeGenerator/static/js/2.4b7f86b1.chunk.js",
+    "static/js/2.4b7f86b1.chunk.js.map": "/treeGenerator/static/js/2.4b7f86b1.chunk.js.map",
     "index.html": "/treeGenerator/index.html",
-    "static/css/main.421c7be3.chunk.css.map": "/treeGenerator/static/css/main.421c7be3.chunk.css.map",
-    "static/js/2.855e6a17.chunk.js.LICENSE.txt": "/treeGenerator/static/js/2.855e6a17.chunk.js.LICENSE.txt"
+    "static/css/main.94b90167.chunk.css.map": "/treeGenerator/static/css/main.94b90167.chunk.css.map",
+    "static/js/2.4b7f86b1.chunk.js.LICENSE.txt": "/treeGenerator/static/js/2.4b7f86b1.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.5f262346.js",
-    "static/js/2.855e6a17.chunk.js",
-    "static/css/main.421c7be3.chunk.css",
-    "static/js/main.276ff62a.chunk.js"
+    "static/js/runtime-main.348a1c46.js",
+    "static/js/2.4b7f86b1.chunk.js",
+    "static/css/main.94b90167.chunk.css",
+    "static/js/main.3ae6f516.chunk.js"
   ]
 }
