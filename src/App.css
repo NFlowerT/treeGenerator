@@ -1,60 +1,60 @@
-.moveButton{
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-app-region: drag;
-  position: absolute;
-  bottom: 0;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  font-size: 2rem;
-  color: #ffffff;
-  top: 230px;
-}
+/*.moveButton{*/
+/*  -webkit-user-select: none;*/
+/*  user-select: none;*/
+/*  -webkit-app-region: drag;*/
+/*  position: absolute;*/
+/*  bottom: 0;*/
+/*  top: 0;*/
+/*  left: 0;*/
+/*  right: 0;*/
+/*  margin: auto;*/
+/*  font-size: 2rem;*/
+/*  color: #ffffff;*/
+/*  top: 230px;*/
+/*}*/
 
-button{
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background: gray;
-  border: none;
-  border-radius: 10px;
-  width: 100px;
-  height: 40px;
-}
+/*button{*/
+/*  position: absolute;*/
+/*  bottom: 20px;*/
+/*  left: 0;*/
+/*  right: 0;*/
+/*  margin: auto;*/
+/*  background: gray;*/
+/*  border: none;*/
+/*  border-radius: 10px;*/
+/*  width: 100px;*/
+/*  height: 40px;*/
+/*}*/
 
-.container{
-  object-fit: cover;
-  background-repeat: no-repeat!important;
-  background-size: cover!important;
-}
+/*.container{*/
+/*  object-fit: cover;*/
+/*  background-repeat: no-repeat!important;*/
+/*  background-size: cover!important;*/
+/*}*/
 
-body {
-  overflow: hidden;
-  box-sizing: border-box;
-  border-radius: 10px;
-  -webkit-border-radius:10px;
-  -moz-border-radius:10px;
-  background: #E5EBE0;
-}
+/*body {*/
+/*  overflow: hidden;*/
+/*  box-sizing: border-box;*/
+/*  border-radius: 10px;*/
+/*  -webkit-border-radius:10px;*/
+/*  -moz-border-radius:10px;*/
+/*  background: #E5EBE0;*/
+/*}*/
 
-#root{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/*#root{*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*}*/
 
-img{
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  z-index: -1000;
-}
+/*img{*/
+/*  position: absolute;*/
+/*  width: 100vw;*/
+/*  height: 100vh;*/
+/*  left: 0;*/
+/*  right: 0;*/
+/*  top: 0;*/
+/*  bottom: 0;*/
+/*  margin: auto;*/
+/*  z-index: -1000;*/
+/*}*/

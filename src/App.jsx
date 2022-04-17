@@ -1,118 +1,20 @@
 import './App.css'
 import * as React from 'react'
-import {PerspectiveCamera, Scene, Group, Vector3, Color, BufferAttribute} from 'three'
-import {useEffect, useRef, useState} from "react"
-import {generateTop} from "./treeTops"
-import {generateTrunk} from "./trunk"
-import {generateModel} from "./generateModel"
-import {BsArrowsMove} from "react-icons/bs"
-import {generate} from "./generators"
-import {createIsland} from "./island"
-import {getRandomFloat, getRandomInt} from "./globalFunctions"
-import {decoder} from "./decoder"
-import {rock} from "./rock"
-import {grass} from "./grass"
-import {MeshSurfaceSampler} from "three/examples/jsm/math/MeshSurfaceSampler";
+import NTree from "./NTree"
+
 const App = () => {
-    const [scene, setScene] = useState(new Scene())
-    const [camera, setCamera] = useState(new PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000))
-    const container = useRef(null)
-
-    const growTree = (start, dna, age) => {
-        const {trunkData, topData, scale} = decoder(dna, age)
-        const {trunkMesh, trunkTop} = generateTrunk(scene, trunkData)
-        const topMesh = topData && generateTop(trunkTop, scene, topData)
-        const group = new Group()
-        group.add(trunkMesh)
-        topData && group.add(topMesh)
-        group.position.set(start.x, start.y, start.z)
-        group.scale.set(scale,scale,scale)
-        return {mesh: group, width: topData.data[0].bottomRadius}
-     }
-
-    useEffect(() => {
-        const islandMesh = createIsland(scene, 10)
-        const group = new Group()
-        group.add(islandMesh)
-        islandMesh.translateY(-4)
-
-
-        const sampler = new MeshSurfaceSampler(islandMesh).build()
-        const tempPosition = new Vector3()
-        const meshPositions = []
-
-        let treeCounter = 0
-        while (treeCounter <= 5){
-            sampler.sample(tempPosition)
-            if(new Vector3(0,0,0).distanceTo(tempPosition) < 9){
-                const {mesh, width} = growTree(
-                    tempPosition,
-                    generate(),
-                    getRandomFloat(11, 20)
-                )
-                mesh.translateY(-3)
-                let check = true
-                meshPositions.forEach(item => {
-                    if (item.position.distanceTo(mesh.position) < item.width + 1.5)
-                        check = false
-                })
-                if (check){
-                    group.add(mesh)
-                    meshPositions.push({position: mesh.position, width: width})
-                    treeCounter++
-                }
-            }
-        }
-
-        let rockCounter = 0
-        while (rockCounter <= 20){
-            sampler.sample(tempPosition)
-            let mesh = rock(tempPosition)
-            if (tempPosition.y > -3 && new Vector3(0,0,0).distanceTo(tempPosition) < 9){
-                mesh.position.set(tempPosition.x, tempPosition.y - 3, tempPosition.z);
-                let check = true
-                meshPositions.forEach(item => {
-                    if (item.position.distanceTo(mesh.position) < 1)
-                        check = false
-                })
-                if (check){
-                    group.add(mesh)
-                    meshPositions.push({position: mesh.position, width: 1})
-                    rockCounter++
-                }
-            }
-        }
-
-        // const grassModels = []
-        // for (let i = 0; i < 10; i++){
-        //     grassModels.push(grass())
-        // }
-        // let grassCounter = 0
-        // while (grassCounter <= 10){
-        //     sampler.sample(tempPosition)
-        //     let mesh = grassModels[getRandomInt(0, 9)].clone()
-        //     if (tempPosition.y > -3 && new Vector3(0,1,0).distanceTo(tempPosition) < 9.4){
-        //         mesh.position.set(tempPosition.x, tempPosition.y - 3, tempPosition.z);
-        //         let check = true
-        //         meshPositions.forEach(item => {
-        //             if (item.position.distanceTo(mesh.position) < 0.8)
-        //                 check = false
-        //         })
-        //         if (check){
-        //             group.add(mesh)
-        //             grassCounter++
-        //         }
-        //     }
-        // }
-        scene.add(group)
-        generateModel(scene, setScene, container, camera, setCamera, group)
-    }, [])
-
     return (
-        <React.Fragment>
-            {window.innerWidth <= 1000 && <BsArrowsMove className={"moveButton"}/>}
-            <div ref={container} className={"container"}/>
-        </React.Fragment>
+        <NTree
+            dnaArray={[
+                "#593e30&0.7&0.83&0.50|0.00|0|49.35,0.15|0.80|0|66.64,0.43|1.60|0|35.29,0.46|2.40|0|42.22,0.29|3.20|0|58.86,0.46|4.00|0|46.90^#313b0b&3.3&0.2&0&4.10|2.25|3.00|10.00,3.07|1.69|3.30|-30.00,2.31|1.27|3.00|-20.00,1.73|0.95|3.50|0.00&2.1&0&0",
+                "#2f1b10&0.7&0.84&0.11|0.00|0|54.65,0.30|0.83|0|27.02,0.41|1.67|0|48.44,0.19|2.50|0|94.42,0.20|3.33|0|37.00,0.38|4.17|0|84.83,0.06|5.00|0|34.21^#1e2309&3.3&0.1&0.2&4.20|2.73|3.80|10.00,3.15|2.05|3.50|0.00,2.36|1.54|3.00|-30.00,1.77|1.15|3.80|20.00,1.33|0.86|3.30|0.00&2&0&0",
+                "#52473e&0.7&0.83&0.17|0.00|0|94.12,0.01|0.90|0|83.24,0.41|1.80|0|78.25,0.19|2.70|0|46.58,0.36|3.60|0|14.25,0.10|4.50|0|25.56^#313b0b&3.8&0.2&0.2&4.25|2.76|3.00|-10.00,3.61|2.35|3.00|-20.00,3.07|2.00|3.00|-20.00,2.61|1.70|3.30|0.00&1.9&0&0",
+                "#593e30&0.7&0.83&0.26|0.00|0|85.31,0.13|0.67|0|47.18,0.02|1.33|0|84.79,0.28|2.00|0|11.60,0.40|2.67|0|39.31,0.33|3.33|0|31.49,0.26|4.00|0|57.76^#99b93e&3.5&0.3&0.2&4.20|2.73|3.80|-30.00,3.15|2.05|3.30|30.00,2.36|1.54|3.00|-20.00,1.77|1.15|3.30|30.00&2&0.3&0",
+                "#52473e&0.68&0.84&0.33|0.00|0|85.47,0.17|0.67|0|91.42,0.07|1.33|0|62.34,0.08|2.00|0|89.40,0.30|2.67|0|59.77,0.18|3.33|0|9.46,0.32|4.00|0|54.98^#647a26&3.3&0.2&0.3&4.20|2.52|3.00|-10.00,3.36|2.02|3.00|-10.00,2.69|1.61|3.30|-30.00,2.15|1.29|3.50|-10.00&2.1&0&0"
+            ]}
+            rockAmount={10}
+            islandSize={8}
+        />
     )
 }
 

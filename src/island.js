@@ -3,11 +3,9 @@ import {
     Mesh,
     MeshPhysicalMaterial,
     Float32BufferAttribute,
-    BufferAttribute,
     Color,
-    Vector3
 } from "three"
-import {convertVectorsToVertices, convertVerticesToVectors, getMatchingVertices, getRandomInt} from "./globalFunctions"
+import {convertVectorsToVertices, convertVerticesToVectors, getMatchingVertices} from "./globalFunctions"
 import {makeNoise2D} from "open-simplex-noise"
 
 export const createIsland = (scene, radius) => {
@@ -30,13 +28,12 @@ export const createIsland = (scene, radius) => {
     const colors = [];
     const color = new Color();
     vertices.forEach(verticle => {
-        color.set( ["#727272", "#557312"][Math.random() > 0.7 ? 0 : 1] );
-
-        colors.push( color.r, color.g, color.b );
-        colors.push( color.r, color.g, color.b );
-        colors.push( color.r, color.g, color.b );
+        color.set( ["#727272", "#435b0a"][Math.random() > 0.7 ? 0 : 1] )
+        colors.push( color.r, color.g, color.b )
+        colors.push( color.r, color.g, color.b )
+        colors.push( color.r, color.g, color.b )
     })
-    mesh.geometry.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) );
+    mesh.geometry.setAttribute( 'color', new Float32BufferAttribute( colors, 3 ) )
     mesh.translateY(1)
     return mesh
 }
