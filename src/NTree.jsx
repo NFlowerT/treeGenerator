@@ -32,7 +32,6 @@ const NTree = ({dnaArray, rockAmount, islandSize}) => {
 		group.add(islandMesh)
 		islandMesh.translateY(-4)
 
-
 		const sampler = new MeshSurfaceSampler(islandMesh).build()
 		const tempPosition = new Vector3()
 		const meshPositions = []
@@ -40,11 +39,11 @@ const NTree = ({dnaArray, rockAmount, islandSize}) => {
 		let treeCounter = 0
 		while (treeCounter <= dnaArray.length - 1){
 			sampler.sample(tempPosition)
-			if(new Vector3(0,0,0).distanceTo(tempPosition) < (islandSize - 1)){
+			if(new Vector3(0,0,0).distanceTo(tempPosition) < (islandSize - 3)){
 				const {mesh, width} = growTree(
 					tempPosition,
 					dnaArray[treeCounter],
-					getRandomFloat(11, 20)
+					15
 				)
 				mesh.translateY(-3)
 				let check = true
